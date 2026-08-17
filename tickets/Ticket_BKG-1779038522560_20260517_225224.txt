@@ -1,0 +1,22 @@
+====================================
+        CINEPLEX E-TICKET           
+====================================
+
+Booking ID:     BKG-1779038522560
+Movie:          Jananayagan
+Theatre:        CinePlex Main
+Showtime:       15 May 2024, 06:00 pm
+Seats:          B3,B4
+
+--- Snacks Ordered ---
+Large Popcorn        x1   ₹250.00
+
+------------------------------------
+Total Paid:     ₹2250.00
+Payment Method: CARD
+Loyalty Earned: 22 pts
+Date Printed:   17 May 2026 22:52:24
+====================================
+      Thank you for choosing        
+             CinePlex!              
+====================================

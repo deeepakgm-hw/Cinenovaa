@@ -1,0 +1,22 @@
+====================================
+        CINEPLEX E-TICKET           
+====================================
+
+Booking ID:     BKG-1779464617763
+Movie:          Inception
+Theatre:        CinePlex Main
+Showtime:       01 Dec 2025, 09:00 pm
+Seats:          A4,A5,A6
+
+--- Snacks Ordered ---
+Nachos               x1   ₹180.00
+
+------------------------------------
+Total Paid:     ₹1230.00
+Payment Method: CARD
+Loyalty Earned: 12 pts
+Date Printed:   22 May 2026 21:13:49
+====================================
+      Thank you for choosing        
+             CinePlex!              
+====================================

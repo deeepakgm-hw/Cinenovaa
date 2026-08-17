@@ -1,0 +1,13 @@
+==================================================
+                CINENOVA DIGITAL E-TICKET          
+==================================================
+ Booking ID : BKG-19E5877A535
+ Movie Name : Inception
+ Theatre    : PVR Plaza Connaught Place
+ Showtime   : 2026-06-03 17:00:00.0
+ Seats      : B5,B6
+ Total Paid : INR 896.8
+ Issued At  : 2026-05-24 11:01:36
+--------------------------------------------------
+ Scan barcode at gate. Enjoy your movie!
+==================================================

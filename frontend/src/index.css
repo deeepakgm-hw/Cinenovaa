@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import './styles/tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Reset & Base ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-base);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--bg-hover);
+  border-radius: var(--radius-pill);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-default);
+}
+
+/* ── Focus Visible ── */
+:focus-visible {
+  outline: 2px solid var(--brand-red);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+/* ── Selection ── */
+::selection {
+  background: rgba(232,54,74,0.3);
+  color: var(--text-primary);
+}
+
+/* ── Animations ── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.6; }
+}
+
+.animate-fade-in {
+  animation: fadeInUp 0.4s var(--transition-slow) both;
+}
+.animate-spin-icon {
+  animation: spin 0.8s linear infinite;
+}
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease infinite;
+}
+
+/* ── Utility: display font ── */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: 0.02em;
+}
+
+/* ── Glass panels ── */
+.glass-panel {
+  background: rgba(14,16,24,0.75);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid var(--border-subtle);
+}

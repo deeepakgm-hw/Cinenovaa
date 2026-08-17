@@ -1,0 +1,13 @@
+==================================================
+               CINEPLEX DIGITAL E-TICKET           
+==================================================
+ Booking ID : BKG-19E58391995
+ Movie Name : Inception
+ Theatre    : CinePlex Main
+ Showtime   : 2025-12-01 18:00:00.0
+ Seats      : A1,A2
+ Total Paid : INR 950.0
+ Issued At  : 2026-05-24 09:53:17
+--------------------------------------------------
+ Scan barcode at gate. Enjoy your movie!
+==================================================

@@ -1,0 +1,62 @@
+======================================================================
+  CineNova - Step-by-Step Guide to Run the Complete Stack
+======================================================================
+
+Follow these instructions to start and run all three tiers of the CineNova cinema ticket booking platform:
+
+----------------------------------------------------------------------
+Prerequisites
+----------------------------------------------------------------------
+1. Node.js (v18 or higher installed)
+2. Java Development Kit (JDK 17 or higher installed)
+3. MySQL Server running on localhost:3306
+
+----------------------------------------------------------------------
+1. Database Schema & Setup
+----------------------------------------------------------------------
+Ensure MySQL is active, then initialize the database:
+- Open a terminal/command prompt in the project root directory ('cineplex').
+- Run the setup script to initialize the 'cineplex_db' database and tables:
+    .\setup_db.bat
+
+----------------------------------------------------------------------
+2. Run the Java REST API Backend & Swing Desktop
+----------------------------------------------------------------------
+The Java application acts as the core database transactional engine, running an API server on port 8082:
+- Open a terminal in the project root directory ('cineplex').
+- Compile the Java source files:
+    .\compile.bat
+- Run the compiled Java application:
+    .\run_app.bat
+
+----------------------------------------------------------------------
+3. Run the Node.js Express Gateway Backend
+----------------------------------------------------------------------
+The Node Express server runs on port 8080. It handles API orchestration, proxies to the Java backend, handles the secure OTP email verification flow, and exposes payment routes (including UTR verification):
+- Open a new terminal window.
+- Navigate to the 'server' directory:
+    cd server
+- Start the server:
+    npm start
+
+----------------------------------------------------------------------
+4. Run the React Vite Frontend
+----------------------------------------------------------------------
+The frontend is a React SPA built with Vite that provides the cinema ticketing user interface on port 5173:
+- Open a new terminal window.
+- Navigate to the 'frontend' directory:
+    cd frontend
+- Start the development server:
+    npm run dev
+
+- Access the platform by opening your browser to:
+    http://localhost:5173/
+
+----------------------------------------------------------------------
+System Port Mapping Summary
+----------------------------------------------------------------------
+* Frontend Web Client:   http://localhost:5173
+* Express Backend API:   http://localhost:8080
+* Java Backend Engine:   http://localhost:8082
+* MySQL Database Port:  3306
+======================================================================

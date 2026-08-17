@@ -1,0 +1,22 @@
+====================================
+        CINEPLEX E-TICKET           
+====================================
+
+Booking ID:     BKG-FCF242
+Movie:          Inception (Re-release)
+Theatre:        Screen 1 - IMAX
+Showtime:       13 May 2026, 07:33 am
+Seats:          F12, F13
+
+--- Snacks Ordered ---
+None
+
+------------------------------------
+Total Paid:     ₹600.00
+Payment Method: CARD
+Loyalty Earned: 4 pts
+Date Printed:   12 May 2026 07:33:59
+====================================
+      Thank you for choosing        
+             CinePlex!              
+====================================

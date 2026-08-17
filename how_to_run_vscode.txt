@@ -1,0 +1,66 @@
+======================================================================
+  CinePlex - How to Run Both Frontend & Backend in VS Code
+======================================================================
+
+Follow these simple steps to run and develop the entire application stack:
+
+----------------------------------------------------------------------
+Prerequisites
+----------------------------------------------------------------------
+1. Node.js (v18 or higher recommended)
+2. Java Development Kit (JDK 17 or higher recommended)
+3. MySQL Server running on localhost:3306
+4. VS Code with the following recommended extensions:
+   - "Extension Pack for Java" (by Microsoft)
+   - "ES7+ React/Redux/React-Native Snippets"
+
+----------------------------------------------------------------------
+Step 1: Database Initialization
+----------------------------------------------------------------------
+Make sure your MySQL database is initialized. You can do this by compiling and running DBSetup.java:
+- Open a terminal in the 'cineplex' root directory
+- Run the setup script:
+    .\setup_db.bat
+
+----------------------------------------------------------------------
+Step 2: Run the Java Backend Service & Swing Desktop
+----------------------------------------------------------------------
+The Java app acts as the core transactional engine and runs an embedded REST API Server on port 8082:
+1. Compile the Java files:
+    .\compile.bat
+2. Start the Java application:
+    .\run_app.bat
+   (Note: In VS Code, you can also open 'src/Main.java' and click the "Run" button directly above the main() method).
+
+----------------------------------------------------------------------
+Step 3: Configure and Start the Node.js Express Gateway
+----------------------------------------------------------------------
+The Node.js server acts as an API gateway on port 8080. It handles proxying to the Java backend and runs the secure SMTP OTP verification:
+1. Open a new terminal in VS Code and navigate to the 'server' directory:
+    cd server
+2. Make sure server/.env exists and has your Gmail SMTP credentials:
+    EMAIL_USER=halfwaveplatforms@gmail.com
+    EMAIL_PASS=Deepak@16
+    (Important: EMAIL_PASS must be a 16-character Google App Password)
+3. Start the gateway server:
+    npm start
+
+----------------------------------------------------------------------
+Step 4: Start the React Frontend
+----------------------------------------------------------------------
+The React web application provides the cinematic booking user interface:
+1. Open a new terminal in VS Code and navigate to the 'frontend' directory:
+    cd frontend
+2. Start the Vite development server:
+    npm run dev
+3. Open http://localhost:5173 in your web browser to access the CineNova app!
+
+----------------------------------------------------------------------
+Debugging & Support
+----------------------------------------------------------------------
+- Verify that port 8080, 8082, and 5173 are not already occupied before launching the servers.
+- The Node.js Express logs will output:
+  - SMTP connection success/failure logs
+  - OTP dispatch confirmation
+  - Verification attempt tallies
+======================================================================

@@ -1,0 +1,287 @@
+/* =============================================================
+   CineNova Design Tokens
+   Single source of truth for all design values
+   ============================================================= */
+
+:root {
+  /* ── Background Scale ── */
+  --bg-base:     #080a0f;   /* Page base – true near-black */
+  --bg-surface:  #0e1018;   /* Cards, panels */
+  --bg-elevated: #141720;   /* Inputs, dropdowns */
+  --bg-modal:    #1a1e2a;   /* Modals, drawers */
+  --bg-hover:    #1e2330;   /* Hover states */
+
+  /* ── Brand Colors ── */
+  --brand-red:        #e8364a;
+  --brand-red-dark:   #c12d3e;
+  --brand-red-glow:   rgba(232,54,74,0.35);
+  --brand-purple:     #9b5de5;
+  --brand-gradient:   linear-gradient(135deg, #e8364a 0%, #9b5de5 100%);
+  --brand-gradient-hover: linear-gradient(135deg, #f04055 0%, #a96df0 100%);
+
+  /* ── Text Scale ── */
+  --text-primary:   #f0f2f8;   /* Near-white */
+  --text-secondary: #8892a4;   /* Muted */
+  --text-tertiary:  #4d5568;   /* Placeholder/disabled */
+  --text-accent:    #e8364a;   /* Brand red */
+
+  /* ── Border Scale ── */
+  --border-subtle:  rgba(255,255,255,0.06);
+  --border-default: rgba(255,255,255,0.10);
+  --border-active:  rgba(232,54,74,0.55);
+
+  /* ── Semantic Colors ── */
+  --color-success:      #22c55e;
+  --color-success-bg:   rgba(34,197,94,0.08);
+  --color-success-border: rgba(34,197,94,0.25);
+  --color-warning:      #f59e0b;
+  --color-warning-bg:   rgba(245,158,11,0.08);
+  --color-warning-border: rgba(245,158,11,0.25);
+  --color-error:        #ef4444;
+  --color-error-bg:     rgba(239,68,68,0.08);
+  --color-error-border: rgba(239,68,68,0.25);
+  --color-info:         #3b82f6;
+  --color-info-bg:      rgba(59,130,246,0.08);
+  --color-info-border:  rgba(59,130,246,0.25);
+
+  /* ── Typography ── */
+  --font-display: 'Bebas Neue', sans-serif;   /* Movie titles, hero headings ONLY */
+  --font-body:    'Inter', system-ui, sans-serif; /* Everything else */
+
+  /* ── Spacing Scale (base-4) ── */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ── Border Radius (exactly 5 values) ── */
+  --radius-sm:   6px;    /* Chips, badges */
+  --radius-md:   10px;   /* Inputs, buttons */
+  --radius-lg:   16px;   /* Cards */
+  --radius-xl:   24px;   /* Modals */
+  --radius-pill: 9999px; /* Rounded buttons, tags */
+
+  /* ── Shadows ── */
+  --shadow-sm:    0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-md:    0 4px 12px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.3);
+  --shadow-lg:    0 16px 40px rgba(0,0,0,0.6), 0 4px 12px rgba(0,0,0,0.4);
+  --shadow-red-glow: 0 0 0 3px var(--brand-red-glow), 0 8px 24px rgba(232,54,74,0.25);
+
+  /* ── Transitions ── */
+  --transition-fast: 120ms ease;
+  --transition-base: 200ms ease;
+  --transition-slow: 350ms ease;
+
+  /* ── Z-Index Scale ── */
+  --z-dropdown: 100;
+  --z-backdrop: 200;
+  --z-modal:    300;
+  --z-toast:    400;
+  --z-tooltip:  500;
+}
+
+/* =============================================================
+   Shared Component Styles
+   ============================================================= */
+
+/* ── Button ── */
+.cn-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-family: var(--font-body);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  white-space: nowrap;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+}
+.cn-btn:disabled { opacity: 0.45; pointer-events: none; }
+
+/* Sizes */
+.cn-btn-sm { padding: 6px 14px;  font-size: 11px; border-radius: var(--radius-sm); }
+.cn-btn-md { padding: 10px 20px; font-size: 12px; }
+.cn-btn-lg { padding: 14px 28px; font-size: 13px; }
+
+/* Variants */
+.cn-btn-primary {
+  background: var(--brand-gradient);
+  color: #fff;
+  box-shadow: var(--shadow-sm);
+}
+.cn-btn-primary:hover:not(:disabled) {
+  background: var(--brand-gradient-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-red-glow);
+}
+.cn-btn-primary:active:not(:disabled) { transform: translateY(0); }
+
+.cn-btn-secondary {
+  background: transparent;
+  color: var(--text-primary);
+  border-color: var(--border-default);
+}
+.cn-btn-secondary:hover:not(:disabled) {
+  border-color: var(--border-active);
+  color: var(--brand-red);
+  background: rgba(232,54,74,0.05);
+}
+
+.cn-btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border-color: transparent;
+}
+.cn-btn-ghost:hover:not(:disabled) { color: var(--text-primary); }
+
+.cn-btn-danger {
+  background: var(--brand-red);
+  color: #fff;
+}
+.cn-btn-danger:hover:not(:disabled) {
+  background: var(--brand-red-dark);
+  transform: translateY(-1px);
+}
+
+.cn-btn-icon { display: flex; align-items: center; }
+.cn-btn-spinner { width: 16px; height: 16px; animation: spin 0.8s linear infinite; }
+
+/* ── Input ── */
+.cn-input-wrap { display: flex; flex-direction: column; gap: 6px; }
+
+.cn-input-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+}
+
+.cn-input-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  transition: border var(--transition-base), box-shadow var(--transition-base);
+}
+.cn-input-field:focus-within {
+  border-color: var(--border-active);
+  box-shadow: 0 0 0 3px rgba(232,54,74,0.15);
+}
+.cn-input-field--error {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 3px rgba(239,68,68,0.15);
+}
+
+.cn-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 11px 14px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+.cn-input::placeholder { color: var(--text-tertiary); }
+.cn-input.pl-10 { padding-left: 40px; }
+.cn-input.pr-10 { padding-right: 40px; }
+
+.cn-input-icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  color: var(--text-tertiary);
+  pointer-events: none;
+}
+.cn-input-icon--left  { left: 12px; }
+.cn-input-icon--right { right: 12px; }
+
+.cn-input-error { font-size: 11px; color: var(--color-error); font-weight: 600; }
+.cn-input-hint  { font-size: 11px; color: var(--text-tertiary); }
+
+/* ── Badge ── */
+.cn-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  border: 1px solid;
+  white-space: nowrap;
+}
+.cn-badge-icon { display: flex; align-items: center; }
+
+.cn-badge-red    { background: rgba(232,54,74,0.12);  border-color: rgba(232,54,74,0.3);  color: var(--brand-red); }
+.cn-badge-gold   { background: rgba(245,158,11,0.12); border-color: rgba(245,158,11,0.3); color: #f59e0b; }
+.cn-badge-green  { background: rgba(34,197,94,0.10);  border-color: rgba(34,197,94,0.25); color: var(--color-success); }
+.cn-badge-purple { background: rgba(155,93,229,0.12); border-color: rgba(155,93,229,0.3); color: var(--brand-purple); }
+.cn-badge-blue   { background: rgba(59,130,246,0.12); border-color: rgba(59,130,246,0.3); color: var(--color-info); }
+.cn-badge-ghost  { background: rgba(255,255,255,0.05); border-color: var(--border-subtle); color: var(--text-secondary); }
+
+/* ── Card ── */
+.cn-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-base);
+}
+.cn-card--hoverable:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-default);
+  box-shadow: var(--shadow-md);
+}
+
+/* ── ShowtimeChip ── */
+.cn-chip {
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: 700;
+  font-family: var(--font-body);
+  letter-spacing: 0.03em;
+  border: 1px solid var(--border-default);
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+.cn-chip-available:hover {
+  border-color: var(--border-active);
+  color: var(--brand-red);
+  background: rgba(232,54,74,0.06);
+}
+.cn-chip-past {
+  opacity: 0.35;
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+.cn-chip-selected {
+  border-color: var(--border-active);
+  background: rgba(232,54,74,0.12);
+  color: var(--brand-red);
+  font-weight: 800;
+}
+

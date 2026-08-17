@@ -1,0 +1,22 @@
+====================================
+        CINEPLEX E-TICKET           
+====================================
+
+Booking ID:     BKG-1779464452265
+Movie:          The Dark Knight
+Theatre:        CinePlex Main
+Showtime:       01 Dec 2025, 07:00 pm
+Seats:          A1,A2,A3
+
+--- Snacks Ordered ---
+Coke Large           x1   ₹120.00
+
+------------------------------------
+Total Paid:     ₹1620.00
+Payment Method: CARD
+Loyalty Earned: 16 pts
+Date Printed:   22 May 2026 21:11:05
+====================================
+      Thank you for choosing        
+             CinePlex!              
+====================================

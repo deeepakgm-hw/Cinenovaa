@@ -1,0 +1,22 @@
+====================================
+        CINEPLEX E-TICKET           
+====================================
+
+Booking ID:     BKG-1779036923780
+Movie:          Jananayagan
+Theatre:        CinePlex Main
+Showtime:       22 Jun 2026, 02:34 am
+Seats:          B3
+
+--- Snacks Ordered ---
+Coke Large           x1   ₹120.00
+
+------------------------------------
+Total Paid:     ₹2620.00
+Payment Method: UPI
+Loyalty Earned: 26 pts
+Date Printed:   17 May 2026 22:25:46
+====================================
+      Thank you for choosing        
+             CinePlex!              
+====================================

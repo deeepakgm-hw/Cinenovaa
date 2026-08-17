@@ -1,0 +1,13 @@
+==================================================
+                CINENOVA DIGITAL E-TICKET          
+==================================================
+ Booking ID : BKG-19E586DAD63
+ Movie Name : Inception
+ Theatre    : PVR Orion
+ Showtime   : 2026-06-01 18:00:00.0
+ Seats      : B4
+ Total Paid : INR 350.0
+ Issued At  : 2026-05-24 10:50:43
+--------------------------------------------------
+ Scan barcode at gate. Enjoy your movie!
+==================================================

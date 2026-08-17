@@ -1,0 +1,22 @@
+====================================
+        CINEPLEX E-TICKET           
+====================================
+
+Booking ID:     BKG-1779461139247
+Movie:          Interstellar
+Theatre:        CinePlex Main
+Showtime:       15 May 2024, 06:00 pm
+Seats:          A1,A2
+
+--- Snacks Ordered ---
+Nachos               x2   ₹360.00
+
+------------------------------------
+Total Paid:     ₹1360.00
+Payment Method: UPI
+Loyalty Earned: 13 pts
+Date Printed:   22 May 2026 20:16:00
+====================================
+      Thank you for choosing        
+             CinePlex!              
+====================================

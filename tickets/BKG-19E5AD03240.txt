@@ -1,0 +1,13 @@
+==================================================
+                CINENOVA DIGITAL E-TICKET          
+==================================================
+ Booking ID : BKG-19E5AD03240
+ Movie Name : The Dark Knight
+ Theatre    : INOX Forum
+ Showtime   : 2026-06-02 15:00:00.0
+ Seats      : B1,B2,B3,B4
+ Total Paid : INR 10808.8
+ Issued At  : 2026-05-24 21:57:34
+--------------------------------------------------
+ Scan barcode at gate. Enjoy your movie!
+==================================================
