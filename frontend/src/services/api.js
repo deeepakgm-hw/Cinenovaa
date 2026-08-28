@@ -1,8 +1,11 @@
 import axios from 'axios'
+import { API_BASE_URL, API_ORIGIN } from '../config/apiConfig'
+
+export { API_ORIGIN, API_BASE_URL }
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api',
-  timeout: 10000
+  baseURL: API_BASE_URL,
+  timeout: 15000
 })
 
 export const authApi = {

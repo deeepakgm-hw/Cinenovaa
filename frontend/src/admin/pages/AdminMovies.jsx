@@ -51,7 +51,7 @@ export default function AdminMovies() {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
       const headers = { 'x-admin-email': user.email };
       
-      const res = await axios.get(`http://localhost:8080/api/admin/movies?page=${page}&limit=20&search=${search}&status=${filters.status}&language=${filters.language}`, { headers });
+      const res = await axios.get(`${API_BASE_URL}/admin/movies?page=${page}&limit=20&search=${search}&status=${filters.status}&language=${filters.language}`, { headers });
       setMovies(res.data.data || []);
       setTotal(res.data.total || 0);
     } catch (error) {
@@ -68,7 +68,7 @@ export default function AdminMovies() {
   const handleDelete = async (id) => {
     try {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
-      await axios.delete(`http://localhost:8080/api/admin/movies/${id}`, { headers: { 'x-admin-email': user.email } });
+      await axios.delete(`${API_BASE_URL}/admin/movies/${id}`, { headers: { 'x-admin-email': user.email } });
       addToast('Movie deleted successfully', 'success');
       setDeleteConfirmId(null);
       fetchMovies();
@@ -84,10 +84,10 @@ export default function AdminMovies() {
       const headers = { 'x-admin-email': user.email };
       
       if (slideMode === 'add') {
-        await axios.post('http://localhost:8080/api/admin/movies', editMovie, { headers });
+        await axios.post(`${API_BASE_URL}/admin/movies`, editMovie, { headers });
         addToast('Movie added successfully', 'success');
       } else {
-        await axios.put(`http://localhost:8080/api/admin/movies/${editMovie.id}`, editMovie, { headers });
+        await axios.put(`${API_BASE_URL}/admin/movies/${editMovie.id}`, editMovie, { headers });
         addToast('Movie updated successfully', 'success');
       }
       setSlideOpen(false);
@@ -98,7 +98,7 @@ export default function AdminMovies() {
   };
 
   const columns = [
-    { key: 'poster', label: 'Poster', render: r => <img src={r.poster_url || 'http://localhost:8080/resources/images/posters/default_poster.png'} style={{ width: 40, height: 60, objectFit: 'cover', borderRadius: 'var(--radius-sm)' }} onError={e => e.target.src = 'http://localhost:8080/resources/images/posters/default_poster.png'} alt="poster" /> },
+    { key: 'poster', label: 'Poster', render: r => <img src={r.poster_url || `${API_ORIGIN}/resources/images/posters/default_poster.png`} style={{ width: 40, height: 60, objectFit: 'cover', borderRadius: 'var(--radius-sm)' }} onError={e => e.target.src = `${API_ORIGIN}/resources/images/posters/default_poster.png`} alt="poster" /> },
     { key: 'title', label: 'Title', render: r => <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{r.title}</span> },
     { key: 'genre', label: 'Genre', render: r => <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{r.genre}</span> },
     { key: 'duration', label: 'Runtime', render: r => <span style={{ fontSize: 12, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: 4 }}><Clock size={11} />{r.duration}m</span> },

@@ -50,7 +50,7 @@ export default function AdminShowtimes() {
       setLoading(true);
       const user = JSON.parse(localStorage.getItem('user') || '{}');
       const headers = { 'x-admin-email': user.email };
-      const res = await axios.get(`http://localhost:8080/api/admin/showtimes?page=${page}&limit=20&search=${search}&theatreId=${filters.theatreId}&format=${filters.format}`, { headers });
+      const res = await axios.get(`${API_BASE_URL}/admin/showtimes?page=${page}&limit=20&search=${search}&theatreId=${filters.theatreId}&format=${filters.format}`, { headers });
       setShowtimes(res.data.data || []);
     } catch (error) {
       addToast('Failed to fetch showtimes', 'error');
@@ -64,8 +64,8 @@ export default function AdminShowtimes() {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
       const headers = { 'x-admin-email': user.email };
       const [m, t] = await Promise.all([
-        axios.get('http://localhost:8080/api/movies?limit=100'),
-        axios.get('http://localhost:8080/api/theatres')
+        axios.get(`${API_BASE_URL}/movies?limit=100`),
+        axios.get(`${API_BASE_URL}/theatres`)
       ]);
       setMovies(m.data.data || m.data || []);
       setTheatres(t.data.data || t.data || []);
@@ -88,10 +88,10 @@ export default function AdminShowtimes() {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
       const headers = { 'x-admin-email': user.email };
       if (editShowtime.id) {
-        await axios.put(`http://localhost:8080/api/admin/showtimes/${editShowtime.id}`, editShowtime, { headers });
+        await axios.put(`${API_BASE_URL}/admin/showtimes/${editShowtime.id}`, editShowtime, { headers });
         addToast('Showtime updated successfully', 'success');
       } else {
-        await axios.post('http://localhost:8080/api/admin/showtimes', editShowtime, { headers });
+        await axios.post(`${API_BASE_URL}/admin/showtimes`, editShowtime, { headers });
         addToast('Showtime added successfully', 'success');
       }
       setSlideOpen(false);
@@ -105,7 +105,7 @@ export default function AdminShowtimes() {
     if(!window.confirm('Delete showtime?')) return;
     try {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
-      await axios.delete(`http://localhost:8080/api/admin/showtimes/${id}`, { headers: { 'x-admin-email': user.email } });
+      await axios.delete(`${API_BASE_URL}/admin/showtimes/${id}`, { headers: { 'x-admin-email': user.email } });
       addToast('Showtime deleted', 'success');
       fetchShowtimes();
     } catch (e) {

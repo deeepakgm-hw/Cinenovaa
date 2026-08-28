@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Eye } from 'lucide-react';
+import { Eye, Shield, User, Wallet, Sparkles } from 'lucide-react';
 import DataTable from '../components/DataTable';
 import SearchFilterBar from '../components/SearchFilterBar';
 import StatusBadge from '../components/StatusBadge';
 import SlideOver from '../components/SlideOver';
 import { useToast } from '../components/Toast';
 import Button from '../../components/Button';
+import Input from '../../components/Input';
+import { API_BASE_URL } from '../../config/apiConfig';
 
 const timeAgo = (dateStr) => {
+  if (!dateStr) return 'never';
   const s = (Date.now() - new Date(dateStr).getTime()) / 1000;
   if (s < 60) return 'just now';
   if (s < 3600) return `${Math.floor(s / 60)}m ago`;
@@ -32,7 +35,7 @@ export default function AdminUsers() {
       setLoading(true);
       const user = JSON.parse(localStorage.getItem('user') || '{}');
       const headers = { 'x-admin-email': user.email };
-      const res = await axios.get(`http://localhost:8080/api/admin/users?page=${page}&limit=20&search=${search}&role=${filters.role}`, { headers });
+      const res = await axios.get(`${API_BASE_URL}/admin/users?page=${page}&limit=20&search=${search}&role=${filters.role}`, { headers });
       setUsers(res.data.data || []);
     } catch (error) {
       addToast('Failed to fetch users', 'error');
@@ -48,7 +51,7 @@ export default function AdminUsers() {
   const fetchUserDetails = async (id) => {
     try {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
-      const res = await axios.get(`http://localhost:8080/api/admin/users/${id}`, { headers: { 'x-admin-email': user.email } });
+      const res = await axios.get(`${API_BASE_URL}/admin/users/${id}`, { headers: { 'x-admin-email': user.email } });
       setSelectedUser(res.data);
       setSlideOpen(true);
     } catch (e) {
@@ -59,7 +62,7 @@ export default function AdminUsers() {
   const handleAdjustBalance = async () => {
     try {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
-      await axios.put(`http://localhost:8080/api/admin/users/${selectedUser.id}/wallet`, { amount: balanceInput }, { headers: { 'x-admin-email': user.email } });
+      await axios.put(`${API_BASE_URL}/admin/users/${selectedUser.id}/wallet`, { amount: balanceInput }, { headers: { 'x-admin-email': user.email } });
       addToast('Balance updated', 'success');
       setBalanceInput(0);
       fetchUserDetails(selectedUser.id);
@@ -72,7 +75,7 @@ export default function AdminUsers() {
   const handleRoleChange = async (newRole) => {
     try {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
-      await axios.put(`http://localhost:8080/api/admin/users/${selectedUser.id}/role`, { role: newRole }, { headers: { 'x-admin-email': user.email } });
+      await axios.put(`${API_BASE_URL}/admin/users/${selectedUser.id}/role`, { role: newRole }, { headers: { 'x-admin-email': user.email } });
       addToast(`Role updated to ${newRole}`, 'success');
       fetchUserDetails(selectedUser.id);
       fetchUsers();

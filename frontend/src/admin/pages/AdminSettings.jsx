@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Trash2 } from 'lucide-react';
 import { useToast } from '../components/Toast';
 import Button from '../../components/Button';
+import { API_BASE_URL, API_ORIGIN } from '../../config/apiConfig';
 
 export default function AdminSettings() {
   const [settings, setSettings] = useState({ seat_lock_duration: 10, gst_rate: 18, spotlight_movie_id: null, surge_rules: [] });
@@ -16,8 +17,8 @@ export default function AdminSettings() {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
       const headers = { 'x-admin-email': user.email };
       const [setRes, movRes] = await Promise.all([
-        axios.get('http://localhost:8080/api/admin/settings', { headers }),
-        axios.get('http://localhost:8080/api/admin/movies?limit=100', { headers })
+        axios.get(`${API_BASE_URL}/admin/settings`, { headers }),
+        axios.get(`${API_BASE_URL}/admin/movies?limit=100`, { headers })
       ]);
       if (setRes.data) setSettings(setRes.data);
       if (movRes.data.data) setMovies(movRes.data.data);
@@ -35,7 +36,7 @@ export default function AdminSettings() {
   const saveSetting = async (key, value) => {
     try {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
-      await axios.put('http://localhost:8080/api/admin/settings', { [key]: value }, { headers: { 'x-admin-email': user.email } });
+      await axios.put(`${API_BASE_URL}/admin/settings`, { [key]: value }, { headers: { 'x-admin-email': user.email } });
       addToast('Settings updated', 'success');
       setSettings(prev => ({ ...prev, [key]: value }));
     } catch (e) {
@@ -62,7 +63,7 @@ export default function AdminSettings() {
   const testEmail = async () => {
     try {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
-      await axios.post('http://localhost:8080/api/admin/settings/test-email', {}, { headers: { 'x-admin-email': user.email } });
+      await axios.post(`${API_BASE_URL}/admin/settings/test-email`, {}, { headers: { 'x-admin-email': user.email } });
       addToast('Test email sent successfully', 'success');
     } catch (e) {
       addToast('Failed to send test email', 'error');
@@ -72,7 +73,7 @@ export default function AdminSettings() {
   const clearLocks = async () => {
     try {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
-      await axios.post('http://localhost:8080/api/seats/cleanup', {}, { headers: { 'x-admin-email': user.email } });
+      await axios.post(`${API_BASE_URL}/seats/cleanup`, {}, { headers: { 'x-admin-email': user.email } });
       addToast('Expired seat locks cleared', 'success');
       setConfirmInput('');
     } catch (e) {
@@ -92,7 +93,7 @@ export default function AdminSettings() {
         
         {spotlightMovie && (
           <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: 16 }}>
-            <img src={spotlightMovie.poster_url || 'http://localhost:8080/resources/images/posters/default_poster.png'} alt="spotlight" style={{ width: 40, height: 60, objectFit: 'cover', borderRadius: 'var(--radius-sm)' }} />
+            <img src={spotlightMovie.poster_url || `${API_ORIGIN}/resources/images/posters/default_poster.png`} alt="spotlight" style={{ width: 40, height: 60, objectFit: 'cover', borderRadius: 'var(--radius-sm)' }} />
             <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{spotlightMovie.title}</span>
           </div>
         )}

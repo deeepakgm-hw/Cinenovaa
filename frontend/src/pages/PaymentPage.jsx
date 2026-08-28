@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import axios from 'axios'
 import NavBar from '../components/NavBar'
+import { API_BASE_URL, API_ORIGIN } from '../config/apiConfig'
 
 // Deterministic 21x21 QR Code visual matrix generator
 function QRCodeSVG({ value }) {
@@ -195,10 +196,10 @@ export default function PaymentPage() {
     if (showMockRzp && mockPaymentStep === 'QR_SCAN' && paymentOrderId) {
       pollInterval = setInterval(async () => {
         try {
-          const res = await axios.get(`http://localhost:8080/api/payment/status/${paymentOrderId}`)
+          const res = await axios.get(`${API_BASE_URL}/payment/status/${paymentOrderId}`)
           if (res.data && res.data.success) {
             if (res.data.status === 'PAID') {
-              clearInterval(pollInterval)
+               clearInterval(pollInterval)
               // Store booking confirmation details and go to ticket page
               sessionStorage.setItem('confirmedBooking', JSON.stringify(res.data))
               setShowMockRzp(false)
@@ -222,7 +223,7 @@ export default function PaymentPage() {
   const fetchWalletInfo = async (userId) => {
     if (!userId) return
     try {
-      const res = await axios.get(`http://localhost:8080/api/wallet/${userId}`)
+      const res = await axios.get(`${API_BASE_URL}/wallet/${userId}`)
       if (res.data && res.data.success) {
         setWalletBalance(res.data.balance)
         setLoyaltyPoints(res.data.loyaltyPoints)
@@ -237,7 +238,7 @@ export default function PaymentPage() {
   const handleLockExpired = async () => {
     setError('Your seat lock hold has expired. Returning to movies page.')
     if (showtime && user && seats.length > 0) {
-      await axios.post('http://localhost:8080/api/seats/release', {
+      await axios.post(`${API_BASE_URL}/seats/release`, {
         showtimeId: showtime.id,
         userId: user.id,
         seats
@@ -251,7 +252,7 @@ export default function PaymentPage() {
   const handleCancelPayment = async () => {
     setLoading(true)
     if (paymentOrderId) {
-      await axios.post('http://localhost:8080/api/payments/cancel', {
+      await axios.post(`${API_BASE_URL}/payments/cancel`, {
         orderId: paymentOrderId,
         reason: 'USER_CANCELLED'
       }).catch(() => null)
@@ -264,7 +265,7 @@ export default function PaymentPage() {
   const handleQrExpired = async () => {
     setLoading(true)
     if (paymentOrderId) {
-      await axios.post('http://localhost:8080/api/payments/cancel', {
+      await axios.post(`${API_BASE_URL}/payments/cancel`, {
         orderId: paymentOrderId,
         reason: 'EXPIRED'
       }).catch(() => null)
@@ -345,7 +346,7 @@ export default function PaymentPage() {
           }
         })
 
-      const orderRes = await axios.post('http://localhost:8080/api/payments/create-order', {
+      const orderRes = await axios.post(`${API_BASE_URL}/payments/create-order`, {
         amount: finalAmount,
         userId: user.id,
         showtimeId: showtime.id,
@@ -448,7 +449,7 @@ export default function PaymentPage() {
         groupSessionCode: sessionCode || null
       }
 
-      const res = await axios.post('http://localhost:8080/api/payments/confirm', payload)
+      const res = await axios.post(`${API_BASE_URL}/payments/confirm`, payload)
       
       if (res.data.success) {
         sessionStorage.setItem('confirmedBooking', JSON.stringify(res.data))
@@ -483,13 +484,13 @@ export default function PaymentPage() {
     }
     setLoading(true)
     try {
-      const res = await axios.post('http://localhost:8080/api/payments/verify-utr', {
+      const res = await axios.post(`${API_BASE_URL}/payments/verify-utr`, {
         orderId: paymentOrderId,
         utr: utrNumber
       })
       if (res.data.success) {
         setMockPaymentStep('PROCESSING')
-        const statusRes = await axios.get(`http://localhost:8080/api/payment/status/${paymentOrderId}`)
+        const statusRes = await axios.get(`${API_BASE_URL}/payment/status/${paymentOrderId}`)
         if (statusRes.data.success && statusRes.data.status === 'PAID') {
           sessionStorage.setItem('confirmedBooking', JSON.stringify(statusRes.data))
           setShowMockRzp(false)
@@ -867,7 +868,7 @@ export default function PaymentPage() {
                   {/* Real Kotak Bank QR Code Image (Cropped to display only the QR code) */}
                   <div className="relative w-48 h-48 mx-auto overflow-hidden bg-white rounded-2xl shadow-xl border border-slate-800">
                     <img 
-                      src="http://localhost:8080/resources/payment/kotak_qr.png" 
+                      src={`${API_ORIGIN}/resources/payment/kotak_qr.png`} 
                       alt="Kotak Bank UPI QR" 
                       className="absolute w-[145%] max-w-none left-1/2 top-[66%] -translate-x-1/2 -translate-y-1/2" 
                     />

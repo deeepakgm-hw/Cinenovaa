@@ -6,6 +6,7 @@ import StatCard from '../components/StatCard';
 import DataTable from '../components/DataTable';
 import { useToast } from '../components/Toast';
 import Button from '../../components/Button';
+import { API_BASE_URL } from '../../config/apiConfig';
 
 export default function AdminReports() {
   const [dateFrom, setDateFrom] = useState(() => {
@@ -22,7 +23,7 @@ export default function AdminReports() {
       setLoading(true);
       const user = JSON.parse(localStorage.getItem('user') || '{}');
       const headers = { 'x-admin-email': user.email };
-      const res = await axios.get(`http://localhost:8080/api/admin/reports?dateFrom=${dateFrom}&dateTo=${dateTo}`, { headers });
+      const res = await axios.get(`${API_BASE_URL}/admin/reports?dateFrom=${dateFrom}&dateTo=${dateTo}`, { headers });
       setReports(res.data);
     } catch (e) {
       addToast('Failed to fetch reports', 'error');
@@ -54,7 +55,7 @@ export default function AdminReports() {
   const handleExportCSV = async () => {
     try {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
-      const res = await axios.get(`http://localhost:8080/api/admin/reports/export/csv?dateFrom=${dateFrom}&dateTo=${dateTo}`, { headers: { 'x-admin-email': user.email }, responseType: 'blob' });
+      const res = await axios.get(`${API_BASE_URL}/admin/reports/export/csv?dateFrom=${dateFrom}&dateTo=${dateTo}`, { headers: { 'x-admin-email': user.email }, responseType: 'blob' });
       const url = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement('a');
       link.href = url;

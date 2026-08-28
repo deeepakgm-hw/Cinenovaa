@@ -5,6 +5,7 @@ import { IndianRupee, Ticket, CalendarClock, Users } from 'lucide-react';
 import StatCard from '../components/StatCard';
 import DataTable from '../components/DataTable';
 import StatusBadge from '../components/StatusBadge';
+import { API_BASE_URL, API_ORIGIN } from '../../config/apiConfig';
 
 const timeAgo = (dateStr) => {
   const s = (Date.now() - new Date(dateStr).getTime()) / 1000;
@@ -28,10 +29,10 @@ export default function AdminDashboard() {
         const headers = { 'x-admin-email': user.email };
         
         const [statsRes, activityRes, perfRes, bookingsRes] = await Promise.all([
-          axios.get('http://localhost:8080/api/admin/stats', { headers }),
-          axios.get('http://localhost:8080/api/admin/activity?days=14', { headers }),
-          axios.get('http://localhost:8080/api/admin/performance', { headers }),
-          axios.get('http://localhost:8080/api/admin/bookings?limit=10&page=1', { headers })
+          axios.get(`${API_BASE_URL}/admin/stats`, { headers }),
+          axios.get(`${API_BASE_URL}/admin/activity?days=14`, { headers }),
+          axios.get(`${API_BASE_URL}/admin/performance`, { headers }),
+          axios.get(`${API_BASE_URL}/admin/bookings?limit=10&page=1`, { headers })
         ]);
 
         setStats(statsRes.data);
@@ -85,7 +86,7 @@ export default function AdminDashboard() {
               const occupancy = Math.min(100, Math.max(0, (item.booked_seats / item.total_seats) * 100));
               return (
                 <div key={i} style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                  <img src={item.poster_url || 'http://localhost:8080/resources/images/posters/default_poster.png'} alt={item.title} style={{ width: '40px', height: '56px', objectFit: 'cover', borderRadius: 'var(--radius-sm)' }} />
+                  <img src={item.poster_url || `${API_ORIGIN}/resources/images/posters/default_poster.png`} alt={item.title} style={{ width: '40px', height: '56px', objectFit: 'cover', borderRadius: 'var(--radius-sm)' }} />
                   <div style={{ flex: 1 }}>
                     <div style={{ color: 'var(--text-primary)', fontSize: '14px', fontWeight: 600 }}>{item.title}</div>
                     <div style={{ color: 'var(--text-secondary)', fontSize: '12px', marginBottom: '8px' }}>{item.showtime_count} theatres</div>

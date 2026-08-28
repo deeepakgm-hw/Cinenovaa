@@ -1,17 +1,18 @@
 import { Star, Clock } from 'lucide-react'
 import Button from './Button'
 import Badge from './Badge'
+import { API_ORIGIN } from '../config/apiConfig'
 
 const getMovieImageUrl = (movie) => {
-  if (!movie) return 'http://localhost:8080/resources/images/posters/default_poster.png'
+  if (!movie) return `${API_ORIGIN}/resources/images/posters/default_poster.png`
   const apiId = movie.movieApiId || movie.movie_api_id
   if (apiId && !apiId.startsWith('fb_')) {
-    return `http://localhost:8080/resources/cache/posters/${apiId}.jpg`
+    return `${API_ORIGIN}/resources/cache/posters/${apiId}.jpg`
   }
   const url = movie.poster_url || movie.posterUrl
-  if (!url) return 'http://localhost:8080/resources/images/posters/default_poster.png'
+  if (!url) return `${API_ORIGIN}/resources/images/posters/default_poster.png`
   if (url.startsWith('http://') || url.startsWith('https://')) return url
-  return `http://localhost:8080/${url}`
+  return `${API_ORIGIN}/${url}`
 }
 
 export default function MovieCard({ movie, onBook, onDetail }) {
@@ -48,7 +49,7 @@ export default function MovieCard({ movie, onBook, onDetail }) {
             if (e.target.src !== movie.poster_url && movie.poster_url) {
               e.target.src = movie.poster_url
             } else {
-              e.target.src = 'http://localhost:8080/resources/images/posters/default_poster.png'
+              e.target.src = `${API_ORIGIN}/resources/images/posters/default_poster.png`
             }
           }}
           style={{

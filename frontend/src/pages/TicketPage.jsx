@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import NavBar from '../components/NavBar'
 import { CheckCircle, Download } from 'lucide-react'
+import { API_ORIGIN } from '../config/apiConfig'
 
 // Deterministic 21x21 QR Code visual matrix generator
 function QRCodeSVG({ value }) {
@@ -110,13 +111,13 @@ function BarcodeSVG({ value }) {
 
 // Helper to get structured poster URL
 const getMovieImageUrl = (movie) => {
-  if (!movie) return 'http://localhost:8080/resources/images/posters/default_poster.png';
+  if (!movie) return `${API_ORIGIN}/resources/images/posters/default_poster.png`;
   const url = movie.poster_url || movie.posterUrl;
-  if (!url) return 'http://localhost:8080/resources/images/posters/default_poster.png';
+  if (!url) return `${API_ORIGIN}/resources/images/posters/default_poster.png`;
   if (url.startsWith('http://') || url.startsWith('https://')) {
     return url;
   }
-  return `http://localhost:8080/${url}`;
+  return `${API_ORIGIN}/${url}`;
 };
 
 // Helper to get structured backdrop URL
@@ -127,7 +128,7 @@ const getMovieBackdropUrl = (movie) => {
   if (url.startsWith('http://') || url.startsWith('https://')) {
     return url;
   }
-  return `http://localhost:8080/${url}`;
+  return `${API_ORIGIN}/${url}`;
 };
 
 export default function TicketPage() {
@@ -262,7 +263,7 @@ export default function TicketPage() {
                     alt={movie.title} 
                     className="w-full h-full object-cover"
                     onError={(e) => {
-                      e.target.src = 'http://localhost:8080/resources/images/posters/default_poster.png';
+                      e.target.src = `${API_ORIGIN}/resources/images/posters/default_poster.png`;
                     }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>

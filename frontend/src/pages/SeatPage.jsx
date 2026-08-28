@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import axios from 'axios'
 import NavBar from '../components/NavBar'
 import { io } from 'socket.io-client'
+import { API_BASE_URL, API_ORIGIN } from '../config/apiConfig'
 
 const Icons = {
   Close: ({ className = "w-5 h-5" }) => (
@@ -158,7 +159,7 @@ export default function SeatPage() {
 
       try {
         setLoading(true);
-        const showtimeRes = await axios.get(`http://localhost:8080/api/showtimes/${showtimeId}`);
+        const showtimeRes = await axios.get(`${API_BASE_URL}/showtimes/${showtimeId}`);
         const stData = showtimeRes.data;
         
         setMovie({
@@ -181,7 +182,7 @@ export default function SeatPage() {
           theatreId: stData.theatreId
         });
         
-        const seatsRes = await axios.get(`http://localhost:8080/api/showtimes/${showtimeId}/seats`);
+        const seatsRes = await axios.get(`${API_BASE_URL}/showtimes/${showtimeId}/seats`);
         setSeats(seatsRes.data);
       } catch (err) {
         console.error('Failed to load page config details:', err);
@@ -198,7 +199,7 @@ export default function SeatPage() {
   useEffect(() => {
     if (!sessionCode || !user || !showtimeId) return;
 
-    const newSocket = io('http://localhost:8080/group-seats', {
+    const newSocket = io(`${API_ORIGIN}/group-seats`, {
       transports: ['websocket']
     });
 
@@ -289,7 +290,7 @@ export default function SeatPage() {
         const organiserSeats = finalSeats.map(fs => fs.seatId);
         
         // Call backend API to lock all selected group seats under the organiser
-        axios.post('http://localhost:8080/api/seats/lock', {
+        axios.post(`${API_BASE_URL}/seats/lock`, {
           showtimeId: parseInt(showtimeId),
           userId: user.id,
           seats: organiserSeats
@@ -357,7 +358,7 @@ export default function SeatPage() {
   const handleLockTimeout = async () => {
     if (selectedSeats.length > 0) {
       try {
-        await axios.post('http://localhost:8080/api/seats/release', {
+        await axios.post(`${API_BASE_URL}/seats/release`, {
           showtimeId: parseInt(showtimeId),
           userId: user.id,
           seats: selectedSeats
@@ -375,7 +376,7 @@ export default function SeatPage() {
     setLoading(true)
     setError('')
     try {
-      const res = await axios.get(`http://localhost:8080/api/showtimes/${showtimeId}/seats`)
+      const res = await axios.get(`${API_BASE_URL}/showtimes/${showtimeId}/seats`)
       setSeats(res.data)
     } catch (err) {
       console.error('Failed to fetch seats:', err)
@@ -400,7 +401,7 @@ export default function SeatPage() {
 
     if (isSelected) {
       try {
-        await axios.post('http://localhost:8080/api/seats/release', {
+        await axios.post(`${API_BASE_URL}/seats/release`, {
           showtimeId: parseInt(showtimeId),
           userId: user.id,
           seats: seatsToProcess
@@ -418,7 +419,7 @@ export default function SeatPage() {
       }
     } else {
       try {
-        await axios.post('http://localhost:8080/api/seats/lock', {
+        await axios.post(`${API_BASE_URL}/seats/lock`, {
           showtimeId: parseInt(showtimeId),
           userId: user.id,
           seats: seatsToProcess
@@ -549,7 +550,7 @@ export default function SeatPage() {
         userId: user.id,
         seats: selectedSeats
       }
-      await axios.post('http://localhost:8080/api/seats/lock', payload)
+      await axios.post(`${API_BASE_URL}/seats/lock`, payload)
       
       sessionStorage.setItem('selectedSeats', JSON.stringify(selectedSeats))
       sessionStorage.setItem('ticketsCost', calculateTotal().toString())

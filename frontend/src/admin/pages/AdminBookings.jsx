@@ -8,6 +8,7 @@ import SlideOver from '../components/SlideOver';
 import { useToast } from '../components/Toast';
 import Button from '../../components/Button';
 import Badge from '../../components/Badge';
+import { API_BASE_URL } from '../../config/apiConfig';
 
 const timeAgo = (dateStr) => {
   const s = (Date.now() - new Date(dateStr).getTime()) / 1000;
@@ -33,7 +34,7 @@ export default function AdminBookings() {
       setLoading(true);
       const user = JSON.parse(localStorage.getItem('user') || '{}');
       const headers = { 'x-admin-email': user.email };
-      const res = await axios.get(`http://localhost:8080/api/admin/bookings?page=${page}&limit=20&search=${search}&status=${filters.status}&dateFrom=${filters.dateFrom}&dateTo=${filters.dateTo}`, { headers });
+      const res = await axios.get(`${API_BASE_URL}/admin/bookings?page=${page}&limit=20&search=${search}&status=${filters.status}&dateFrom=${filters.dateFrom}&dateTo=${filters.dateTo}`, { headers });
       setBookings(res.data.data || []);
     } catch (error) {
       addToast('Failed to fetch bookings', 'error');
@@ -50,7 +51,7 @@ export default function AdminBookings() {
     if (cancelInput !== 'CANCEL') return;
     try {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
-      await axios.put(`http://localhost:8080/api/admin/bookings/${selectedBooking.id}/cancel`, {}, { headers: { 'x-admin-email': user.email } });
+      await axios.put(`${API_BASE_URL}/admin/bookings/${selectedBooking.id}/cancel`, {}, { headers: { 'x-admin-email': user.email } });
       addToast('Booking cancelled successfully', 'success');
       setSlideOpen(false);
       setCancelInput('');

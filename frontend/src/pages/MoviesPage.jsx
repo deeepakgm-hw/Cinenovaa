@@ -5,6 +5,7 @@ import {
   Users, Ticket, BadgeCheck, ChevronRight, Copy, CheckCircle, Phone
 } from 'lucide-react'
 import { movieApi } from '../services/api'
+import { API_ORIGIN, API_BASE_URL } from '../config/apiConfig'
 import NavBar from '../components/NavBar'
 import MovieCard from '../components/MovieCard'
 import Button from '../components/Button'
@@ -15,23 +16,23 @@ import axios from 'axios'
 
 /* ── Helpers ── */
 const getMovieImageUrl = (movie, isBackdrop = false) => {
-  if (!movie) return 'http://localhost:8080/resources/images/posters/default_poster.png'
+  if (!movie) return `${API_ORIGIN}/resources/images/posters/default_poster.png`
   if (isBackdrop) {
     const bd = movie.backdrop_url || movie.backdropUrl
     if (!bd) {
       const apiId = movie.movieApiId || movie.movie_api_id
-      if (apiId) return `http://localhost:8080/resources/cache/posters/${apiId}.jpg`
+      if (apiId) return `${API_ORIGIN}/resources/cache/posters/${apiId}.jpg`
       const pu = movie.poster_url || movie.posterUrl
-      return pu ? (pu.startsWith('http') ? pu : `http://localhost:8080/${pu}`) : 'http://localhost:8080/resources/images/posters/default_poster.png'
+      return pu ? (pu.startsWith('http') ? pu : `${API_ORIGIN}/${pu}`) : `${API_ORIGIN}/resources/images/posters/default_poster.png`
     }
-    return bd.startsWith('http') ? bd : `http://localhost:8080/${bd}`
+    return bd.startsWith('http') ? bd : `${API_ORIGIN}/${bd}`
   }
   const apiId = movie.movieApiId || movie.movie_api_id
-  if (apiId) return `http://localhost:8080/resources/cache/posters/${apiId}.jpg`
+  if (apiId) return `${API_ORIGIN}/resources/cache/posters/${apiId}.jpg`
   const url = movie.poster_url || movie.posterUrl
-  if (!url) return 'http://localhost:8080/resources/images/posters/default_poster.png'
+  if (!url) return `${API_ORIGIN}/resources/images/posters/default_poster.png`
   if (url.startsWith('http://') || url.startsWith('https://')) return url
-  return `http://localhost:8080/${url}`
+  return `${API_ORIGIN}/${url}`
 }
 
 const fmtTime = (s) => {
@@ -112,7 +113,7 @@ export default function MoviesPage() {
 
   const fetchCities = async () => {
     try {
-      const r = await axios.get('http://localhost:8080/api/cities')
+      const r = await axios.get(`${API_BASE_URL}/cities`)
       setCities(r.data)
       const stored = localStorage.getItem('selectedCity')
       if (stored) { const c = JSON.parse(stored); setSelectedCity(c); fetchDashboard(c.id) }
@@ -147,11 +148,11 @@ export default function MoviesPage() {
     try {
       const cityId = selectedCity?.id
       if (!cityId) { setShowCityModal(true); return }
-      let url = `http://localhost:8080/api/theatres?cityId=${cityId}&movieId=${movie.id}`
+      let url = `${API_BASE_URL}/theatres?cityId=${cityId}&movieId=${movie.id}`
       if (gpsCoords) url += `&lat=${gpsCoords.lat}&lng=${gpsCoords.lng}`
       const [rT, rSt] = await Promise.all([
         axios.get(url),
-        axios.get(`http://localhost:8080/api/showtimes?movieId=${movie.id}`)
+        axios.get(`${API_BASE_URL}/showtimes?movieId=${movie.id}`)
       ])
       setTheatres(rT.data); setAllMovieShowtimes(rSt.data); setShowBookingModal(true)
     } catch { alert('Error loading theatres for ' + movie.title) }
@@ -160,7 +161,7 @@ export default function MoviesPage() {
   const handleTheatreSelect = async (theatre) => {
     setSelectedTheatre(theatre)
     try {
-      const r = await axios.get(`http://localhost:8080/api/showtimes?movieId=${selectedMovie.id}&theatreId=${theatre.id}`)
+      const r = await axios.get(`${API_BASE_URL}/showtimes?movieId=${selectedMovie.id}&theatreId=${theatre.id}`)
       setShowtimes(r.data); setBookingStep(2)
     } catch {}
   }
@@ -175,7 +176,7 @@ export default function MoviesPage() {
   const handleCreateGroupSession = async (st) => {
     if (!user) { alert('Please log in to create a group session.'); return }
     try {
-      const r = await axios.post('http://localhost:8080/api/group-sessions', { showtimeId: st.id, organiserUserId: user.id })
+      const r = await axios.post(`${API_BASE_URL}/group-sessions`, { showtimeId: st.id, organiserUserId: user.id })
       if (r.data.success) { setGroupSessionData(r.data); setShowBookingModal(false); setShowShareModal(true) }
     } catch (err) { alert(err.response?.data?.message || 'Failed to create group session.') }
   }
@@ -538,7 +539,7 @@ export default function MoviesPage() {
                     const sorted = [...thSt].sort((a, b) => new Date(a.showTime) - new Date(b.showTime))
                     const minPrice = sorted.length > 0 ? Math.min(...sorted.map(s => s.price)) : 220
                     const isExp = expandedTheatreId === th.id
-                    const imgUrl = th.image_url ? (th.image_url.startsWith('http') ? th.image_url : `http://localhost:8080${th.image_url}`) : 'http://localhost:8080/resources/images/posters/default_poster.png'
+                    const imgUrl = th.image_url ? (th.image_url.startsWith('http') ? th.image_url : `${API_ORIGIN}${th.image_url}`) : `${API_ORIGIN}/resources/images/posters/default_poster.png`
                     const amenities = th.amenities ? th.amenities.split(',').map(a => a.trim()) : []
 
                     return (
