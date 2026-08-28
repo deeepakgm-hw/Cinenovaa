@@ -1363,7 +1363,7 @@ app.get('/api/movies/sync', async (req, res) => {
 app.get('/api/movies/now-playing', async (req, res) => {
     try {
         const pool = getPool();
-        const [rows] = await pool.query('SELECT * FROM movies WHERE status = "NOW_SHOWING"');
+        const [rows] = await pool.query('SELECT * FROM movies WHERE status = "NOW_SHOWING" OR status = "POPULAR"');
         res.json(rows);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -1385,7 +1385,7 @@ app.get('/api/movies/upcoming', async (req, res) => {
 app.get('/api/movies/popular', async (req, res) => {
     try {
         const pool = getPool();
-        const [rows] = await pool.query('SELECT * FROM movies WHERE status = "POPULAR"');
+        const [rows] = await pool.query('SELECT * FROM movies WHERE status = "POPULAR" OR status = "NOW_SHOWING" ORDER BY CAST(rating AS DECIMAL(3,1)) DESC LIMIT 10');
         res.json(rows);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -1422,7 +1422,7 @@ app.get('/api/movies/search', async (req, res) => {
     }
 });
 
-// GET /api/movies - Legacy list endpoint for React app (gets now showing)
+// GET /api/movies - List endpoint for React app (gets now showing)
 app.get('/api/movies', async (req, res) => {
     try {
         const cityId = req.query.cityId;
@@ -1435,11 +1435,11 @@ app.get('/api/movies', async (req, res) => {
                 JOIN showtimes s ON m.id = s.movie_id
                 JOIN screens sc ON s.screen_id = sc.id
                 JOIN theatres t ON sc.theatre_id = t.id
-                WHERE t.city_id = ? AND m.status = 'NOW_SHOWING'
+                WHERE t.city_id = ? AND (m.status = 'NOW_SHOWING' OR m.status = 'POPULAR')
             `;
             [rows] = await pool.query(sql, [cityId]);
         } else {
-            [rows] = await pool.query('SELECT * FROM movies WHERE status = "NOW_SHOWING"');
+            [rows] = await pool.query('SELECT * FROM movies WHERE status = "NOW_SHOWING" OR status = "POPULAR"');
         }
         res.json(rows);
     } catch (err) {

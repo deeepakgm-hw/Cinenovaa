@@ -405,12 +405,16 @@ async function syncSingleMovie(pool, m) {
         await downloadPosterLocal(m.poster_url, m.movie_api_id);
         // Look up by movie_api_id or details (title + release_date)
         let existingId = null;
-        let queryStr = 'SELECT id FROM movies WHERE (movie_api_id = ? AND movie_api_id IS NOT NULL) OR (title = ? AND release_date = ?)';
+        let existingStatus = null;
+        let queryStr = 'SELECT id, status FROM movies WHERE (movie_api_id = ? AND movie_api_id IS NOT NULL) OR (title = ? AND release_date = ?)';
         const [rows] = await pool.query(queryStr, [m.movie_api_id, m.title, m.release_date]);
         
         if (rows.length > 0) {
             existingId = rows[0].id;
+            existingStatus = rows[0].status;
         }
+
+        const finalStatus = (existingStatus === 'NOW_SHOWING' && m.status === 'POPULAR') ? 'NOW_SHOWING' : m.status;
 
         if (existingId !== null) {
             // Update
@@ -426,10 +430,10 @@ async function syncSingleMovie(pool, m) {
                 m.title, m.description, m.duration, m.genre,
                 m.language, m.release_date, m.poster_url,
                 m.backdrop_url, m.trailer_url, m.rating,
-                m.status, m.cast_members, m.movie_api_id,
+                finalStatus, m.cast_members, m.movie_api_id,
                 existingId
             ]);
-            await createShowtimesIfNeeded(pool, existingId, m.status);
+            await createShowtimesIfNeeded(pool, existingId, finalStatus);
             return { action: 'updated', id: existingId };
         } else {
             // Insert
