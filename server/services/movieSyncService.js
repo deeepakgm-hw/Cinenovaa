@@ -6,49 +6,20 @@ const axios = require('axios');
 let dbConfig = null;
 let dbPool = null;
 
-// Parse db.properties for credentials and TMDB API Key
+// Parse environment variables / config for credentials and TMDB API Key
 function getDbConfig() {
     if (dbConfig) return dbConfig;
 
-    const propsPath = path.join(__dirname, '../../src/db.properties');
     const config = {
-        host: 'localhost',
-        port: 3306,
-        user: 'root',
-        password: '',
-        database: 'cineplex_db',
-        tmdbKey: ''
+        host: process.env.DB_HOST || 'localhost',
+        port: parseInt(process.env.DB_PORT, 10) || 3306,
+        user: process.env.DB_USER || 'root',
+        password: process.env.DB_PASSWORD !== undefined ? process.env.DB_PASSWORD : '9380',
+        database: process.env.DB_NAME || 'cineplex_db',
+        tmdbKey: process.env.TMDB_API_KEY || '8265bd1679663a7ea12ac168da84d2e8'
     };
 
-    if (fs.existsSync(propsPath)) {
-        const content = fs.readFileSync(propsPath, 'utf-8');
-        content.split(/\r?\n/).forEach(line => {
-            const trimmed = line.trim();
-            if (trimmed && !trimmed.startsWith('#') && trimmed.includes('=')) {
-                const index = trimmed.indexOf('=');
-                const key = trimmed.substring(0, index).trim();
-                const val = trimmed.substring(index + 1).trim();
-
-                if (key === 'db.url') {
-                    // Extract host, port, database from jdbc:mysql://localhost:3306/cineplex_db
-                    const match = val.match(/jdbc:mysql:\/\/([^:]+):(\d+)\/([^?]+)/);
-                    if (match) {
-                        config.host = match[1];
-                        config.port = parseInt(match[2], 10);
-                        config.database = match[3];
-                    }
-                } else if (key === 'db.user') {
-                    config.user = val;
-                } else if (key === 'db.password') {
-                    config.password = val;
-                } else if (key === 'tmdb.api.key') {
-                    config.tmdbKey = val;
-                }
-            }
-        });
-    }
-
-    if (config.tmdbKey.startsWith('your_') || !config.tmdbKey) {
+    if (config.tmdbKey.startsWith('your_')) {
         config.tmdbKey = '';
     }
 

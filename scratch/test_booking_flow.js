@@ -5,40 +5,14 @@ const path = require('path');
 
 // Read db.properties to get the correct password and database name
 function getDbConfig() {
-    const propsPath = path.join(__dirname, '../src/db.properties');
-    const config = {
-        host: 'localhost',
-        port: 3306,
-        user: 'root',
-        password: '',
-        database: 'cineplex_db'
+    require('dotenv').config({ path: path.join(__dirname, '../server/.env') });
+    return {
+        host: process.env.DB_HOST || 'localhost',
+        port: parseInt(process.env.DB_PORT, 10) || 3306,
+        user: process.env.DB_USER || 'root',
+        password: process.env.DB_PASSWORD !== undefined ? process.env.DB_PASSWORD : '9380',
+        database: process.env.DB_NAME || 'cineplex_db'
     };
-
-    if (fs.existsSync(propsPath)) {
-        const content = fs.readFileSync(propsPath, 'utf-8');
-        content.split(/\r?\n/).forEach(line => {
-            const trimmed = line.trim();
-            if (trimmed && !trimmed.startsWith('#') && trimmed.includes('=')) {
-                const index = trimmed.indexOf('=');
-                const key = trimmed.substring(0, index).trim();
-                const val = trimmed.substring(index + 1).trim();
-
-                if (key === 'db.url') {
-                    const match = val.match(/jdbc:mysql:\/\/([^:]+):(\d+)\/([^?]+)/);
-                    if (match) {
-                        config.host = match[1];
-                        config.port = parseInt(match[2], 10);
-                        config.database = match[3];
-                    }
-                } else if (key === 'db.user') {
-                    config.user = val;
-                } else if (key === 'db.password') {
-                    config.password = val;
-                }
-            }
-        });
-    }
-    return config;
 }
 
 (async () => {

@@ -26,8 +26,7 @@ const io = new Server(server, {
     }
 });
 
-const PORT = 8080;
-const JAVA_BACKEND_URL = 'http://localhost:8082';
+const PORT = process.env.PORT || 8080;
 
 app.use(cors());
 
@@ -201,6 +200,22 @@ app.post('/api/auth/otp/verify', async (req, res) => {
     } catch (err) {
         console.error('[OTP ROUTE ERROR] Verification failed:', err.message);
         res.status(500).json({ success: false, error: err.message, message: 'Internal server error during verification.' });
+    }
+});
+
+// ==========================================
+// CITIES ENDPOINTS
+// ==========================================
+
+// GET /api/cities - List all available cities
+app.get('/api/cities', async (req, res) => {
+    try {
+        const pool = getPool();
+        const [rows] = await pool.query('SELECT * FROM cities ORDER BY name ASC');
+        res.json(rows);
+    } catch (err) {
+        console.error('[API ERROR] Failed to fetch cities:', err.message);
+        res.status(500).json({ error: err.message });
     }
 });
 
@@ -1789,75 +1804,6 @@ groupSeatsNamespace.on('connection', (socket) => {
 
 
 // ==========================================
-// REVERSE PROXY TO JAVA BACKEND (Port 8082)
-// ==========================================
-app.use(async (req, res) => {
-    const targetUrl = `${JAVA_BACKEND_URL}${req.originalUrl}`;
-    try {
-        const response = await axios({
-            method: req.method,
-            url: targetUrl,
-            data: req.body,
-            headers: {
-                ...req.headers,
-                host: 'localhost:8082' // Rewrite host header to prevent connection rejections
-            },
-            validateStatus: () => true // Allow handling all HTTP status codes (2xx, 3xx, 4xx, 5xx)
-        });
-
-        // Set response headers and send status/body
-        Object.entries(response.headers).forEach(([key, val]) => {
-            res.setHeader(key, val);
-        });
-        res.status(response.status).send(response.data);
-    } catch (err) {
-        console.error(`[PROXY ERROR] Gateway connection to Java backend failed at ${targetUrl}:`, err.message);
-        res.status(502).json({ error: 'Bad Gateway: Express failed to connect to Java backend service.' });
-    }
-});
-
-// Start HTTP server and run startup sync
-server.listen(PORT, async () => {
-    console.log(`[SERVER] Express server listening on http://localhost:${PORT}`);
-    
-    // Initialize group booking DB structure
-    await initGroupBookingDB();
-    
-    // Auto sync on startup in background
-    setTimeout(async () => {
-        try {
-            await runSync();
-        } catch (err) {
-            console.error('[SERVER ERROR] Startup database synchronization failed:', err.message);
-        }
-    }, 1000);
-});
-
-// Schedule task to refresh movie database every 24 hours (using node-cron)
-// "0 0 * * *" means every night at midnight.
-cron.schedule('0 0 * * *', async () => {
-    console.log('[CRON] Executing scheduled daily database movie refresh...');
-    try {
-        await runSync();
-    } catch (err) {
-        console.error('[CRON ERROR] Scheduled daily sync failed:', err.message);
-    }
-});
-
-// Schedule task to automatically clean up expired seat locks every minute
-cron.schedule('*/1 * * * *', async () => {
-    try {
-        const pool = getPool();
-        const [result] = await pool.query("DELETE FROM seat_locks WHERE expires_at < NOW()");
-        if (result.affectedRows > 0) {
-            console.log(`[CRON] Auto-cleaned up ${result.affectedRows} expired seat locks from database.`);
-        }
-    } catch (err) {
-        console.error('[CRON ERROR] Scheduled expired seat locks cleanup failed:', err.message);
-    }
-});
-
-// ==========================================
 // ADMIN ROUTES
 // ==========================================
 
@@ -2326,5 +2272,113 @@ app.get('/api/admin/performance', adminAuth, async (req, res) => {
         res.json({ success: true, performance: rows });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Admin City Management
+app.post('/api/admin/city', adminAuth, async (req, res) => {
+    try {
+        const { name } = req.body;
+        if (!name || !name.trim()) {
+            return res.status(400).json({ success: false, message: 'City name is required' });
+        }
+        const pool = getPool();
+        const [result] = await pool.query('INSERT INTO cities (name) VALUES (?)', [name.trim()]);
+        res.json({ success: true, cityId: result.insertId, message: 'City added successfully' });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Admin Theatre Management
+app.post('/api/admin/theatre', adminAuth, async (req, res) => {
+    try {
+        const { name, cityId, location } = req.body;
+        if (!name || !name.trim() || !cityId) {
+            return res.status(400).json({ success: false, message: 'Name and cityId are required' });
+        }
+        const pool = getPool();
+        const [result] = await pool.query('INSERT INTO theatres (name, city_id, location) VALUES (?, ?, ?)', [name.trim(), parseInt(cityId, 10), (location || '').trim()]);
+        res.json({ success: true, theatreId: result.insertId, message: 'Theatre added successfully' });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Admin Screen Management
+app.post('/api/admin/screen', adminAuth, async (req, res) => {
+    try {
+        const { theatreId, screenName, totalSeats } = req.body;
+        if (!theatreId || !screenName || !totalSeats) {
+            return res.status(400).json({ success: false, message: 'theatreId, screenName, and totalSeats are required' });
+        }
+        const pool = getPool();
+        const [result] = await pool.query('INSERT INTO screens (theatre_id, screen_name, total_seats) VALUES (?, ?, ?)', [parseInt(theatreId, 10), screenName.trim(), parseInt(totalSeats, 10)]);
+        res.json({ success: true, screenId: result.insertId, message: 'Screen added successfully' });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// ==========================================
+// SYSTEM STATUS ENDPOINT
+// ==========================================
+app.get('/api/status', async (req, res) => {
+    let dbConnected = false;
+    try {
+        const pool = getPool();
+        const [rows] = await pool.query('SELECT 1');
+        dbConnected = rows.length > 0;
+    } catch (e) {
+        dbConnected = false;
+    }
+    res.json({
+        status: 'RUNNING',
+        database: dbConnected ? 'CONNECTED' : 'DISCONNECTED',
+        timestamp: new Date().toISOString()
+    });
+});
+
+// ==========================================
+// SERVER INITIALIZATION & BACKGROUND SCHEDULERS
+// ==========================================
+
+// Start HTTP server and run startup sync
+server.listen(PORT, async () => {
+    console.log(`[SERVER] Express server listening on http://localhost:${PORT}`);
+    
+    // Initialize group booking DB structure
+    await initGroupBookingDB();
+    
+    // Auto sync on startup in background
+    setTimeout(async () => {
+        try {
+            await runSync();
+        } catch (err) {
+            console.error('[SERVER ERROR] Startup database synchronization failed:', err.message);
+        }
+    }, 1000);
+});
+
+// Schedule task to refresh movie database every 24 hours (using node-cron)
+cron.schedule('0 0 * * *', async () => {
+    console.log('[CRON] Executing scheduled daily database movie refresh...');
+    try {
+        await runSync();
+    } catch (err) {
+        console.error('[CRON ERROR] Scheduled daily sync failed:', err.message);
+    }
+});
+
+// Schedule task to automatically clean up expired seat locks every minute
+cron.schedule('*/1 * * * *', async () => {
+    try {
+        const pool = getPool();
+        const [result] = await pool.query("DELETE FROM seat_locks WHERE expires_at < NOW()");
+        if (result.affectedRows > 0) {
+            console.log(`[CRON] Auto-cleaned up ${result.affectedRows} expired seat locks from database.`);
+        }
+    } catch (err) {
+        console.error('[CRON ERROR] Scheduled expired seat locks cleanup failed:', err.message);
     }
 });
