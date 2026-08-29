@@ -27,6 +27,12 @@ export const bookingApi = {
   pay: (payload) => api.post('/payments/confirm', payload)
 }
 
+export const groupApi = {
+  create: (payload) => api.post('/group-sessions', payload),
+  get: (code) => api.get(`/group-sessions/${code}`),
+  close: (code) => api.delete(`/group-sessions/${code}`)
+}
+
 export const adminApi = {
   analytics: () => api.get('/analytics/summary')
 }

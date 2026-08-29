@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Search, MapPin, ChevronDown, LogOut } from 'lucide-react'
+import { Search, MapPin, ChevronDown, LogOut, Users } from 'lucide-react'
+import JoinGroupModal from './JoinGroupModal'
 
 export default function NavBar({
   search = '',
@@ -9,6 +11,7 @@ export default function NavBar({
   user,
   onLogout,
 }) {
+  const [showJoinModal, setShowJoinModal] = useState(false)
   return (
     <header style={{
       position: 'sticky',
@@ -95,6 +98,40 @@ export default function NavBar({
         {/* ── Right Cluster ── */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 }}>
 
+          {/* Join Group Booking Button */}
+          <button
+            onClick={() => setShowJoinModal(true)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '7px 14px',
+              background: 'rgba(155,93,229,0.12)',
+              border: '1px solid rgba(155,93,229,0.35)',
+              borderRadius: 'var(--radius-pill)',
+              color: '#c084fc',
+              fontSize: '12px',
+              fontWeight: 700,
+              fontFamily: 'var(--font-body)',
+              cursor: 'pointer',
+              transition: 'all var(--transition-base)',
+              whiteSpace: 'nowrap',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.background = 'rgba(155,93,229,0.22)'
+              e.currentTarget.style.borderColor = 'var(--brand-purple)'
+              e.currentTarget.style.boxShadow = '0 0 12px rgba(155,93,229,0.25)'
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.background = 'rgba(155,93,229,0.12)'
+              e.currentTarget.style.borderColor = 'rgba(155,93,229,0.35)'
+              e.currentTarget.style.boxShadow = 'none'
+            }}
+          >
+            <Users size={14} style={{ color: '#c084fc', flexShrink: 0 }} />
+            <span>Join Group</span>
+          </button>
+
           {/* Location Pill */}
           {selectedCity && (
             <button
@@ -153,6 +190,9 @@ export default function NavBar({
           )}
         </div>
       </div>
+
+      {/* Join Group Modal */}
+      <JoinGroupModal isOpen={showJoinModal} onClose={() => setShowJoinModal(false)} />
     </header>
   )
 }
