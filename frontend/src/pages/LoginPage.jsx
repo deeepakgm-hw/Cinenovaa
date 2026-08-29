@@ -30,8 +30,8 @@ export default function LoginPage() {
     setError(''); setSuccessMsg(''); setLoading(true)
     try {
       const res = await authApi.sendOtp({ email })
-      if (res.data?.fallbackOtp && !res.data?.emailSent) {
-        setSuccessMsg(`Your verification code is: ${res.data.fallbackOtp}`)
+      if (res.data?.fallbackOtp) {
+        setSuccessMsg(`Code sent to your email! (Your code: ${res.data.fallbackOtp})`)
         setOtp(res.data.fallbackOtp.split(''))
       } else {
         setSuccessMsg('Code sent — check your inbox (and spam folder).')
