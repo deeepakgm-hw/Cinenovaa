@@ -208,14 +208,26 @@ app.post('/api/auth/otp/verify', async (req, res) => {
 
 // POST /api/auth/google - Authenticate using Google OAuth / Identity Services
 app.post('/api/auth/google', async (req, res) => {
-    const { credential, email: clientEmail, name: clientName } = req.body;
+    const { credential, accessToken, email: clientEmail, name: clientName } = req.body;
 
     try {
         let email = '';
         let name = '';
         let picture = '';
 
-        if (credential) {
+        if (accessToken) {
+            // Verify and fetch profile using Google's userinfo API
+            const googleRes = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo', {
+                headers: { Authorization: `Bearer ${accessToken}` },
+                timeout: 10000
+            });
+            if (!googleRes.data || !googleRes.data.email) {
+                return res.status(400).json({ success: false, message: 'Invalid Google access token or profile.' });
+            }
+            email = googleRes.data.email;
+            name = googleRes.data.name || email.split('@')[0];
+            picture = googleRes.data.picture || '';
+        } else if (credential) {
             // Verify Google credential with Google's OAuth2 tokeninfo endpoint
             const googleRes = await axios.get(`https://oauth2.googleapis.com/tokeninfo?id_token=${credential}`, { timeout: 10000 });
             if (!googleRes.data || !googleRes.data.email) {
@@ -228,7 +240,7 @@ app.post('/api/auth/google', async (req, res) => {
             email = clientEmail.trim();
             name = clientName || email.split('@')[0];
         } else {
-            return res.status(400).json({ success: false, message: 'Google credential token or email is required.' });
+            return res.status(400).json({ success: false, message: 'Google credential token, accessToken, or email is required.' });
         }
 
         const pool = getPool();

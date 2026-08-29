@@ -77,7 +77,7 @@ export default function LoginPage() {
       try {
         const tokenClient = window.google.accounts.oauth2.initTokenClient({
           client_id: googleClientId,
-          scope: 'email profile',
+          scope: 'email profile openid',
           callback: async (tokenResponse) => {
             if (tokenResponse.error) {
               setError('Google sign in was cancelled.')
@@ -87,23 +87,15 @@ export default function LoginPage() {
               setLoading(true)
               setError('')
               try {
-                const userRes = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo', {
-                  headers: { Authorization: `Bearer ${tokenResponse.access_token}` }
-                })
-                if (userRes.data?.email) {
-                  const res = await authApi.googleAuth({
-                    email: userRes.data.email,
-                    name: userRes.data.name || userRes.data.email.split('@')[0]
-                  })
-                  if (res.data.success) {
-                    localStorage.setItem('user', JSON.stringify(res.data.user))
-                    localStorage.setItem('sessionId', res.data.sessionId)
-                    setSuccessMsg(`Welcome, ${res.data.user.username}! Redirecting...`)
-                    setTimeout(() => navigate(res.data.user.role === 'ADMIN' ? '/admin' : '/movies'), 800)
-                  }
+                const res = await authApi.googleAuth({ accessToken: tokenResponse.access_token })
+                if (res.data.success) {
+                  localStorage.setItem('user', JSON.stringify(res.data.user))
+                  localStorage.setItem('sessionId', res.data.sessionId)
+                  setSuccessMsg(`Welcome, ${res.data.user.username}! Redirecting...`)
+                  setTimeout(() => navigate(res.data.user.role === 'ADMIN' ? '/admin' : '/movies'), 800)
                 }
               } catch (err) {
-                setError('Failed to retrieve Google profile.')
+                setError(err.response?.data?.message || 'Failed to sign in with Google. Please try again.')
               } finally {
                 setLoading(false)
               }
