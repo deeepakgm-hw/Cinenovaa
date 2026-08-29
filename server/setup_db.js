@@ -15,14 +15,20 @@ async function setupDatabase() {
 
     let connection;
     try {
-        // Connect to server (without selecting DB first)
-        connection = await mysql.createConnection({
+        const isRemote = host !== 'localhost' && host !== '127.0.0.1';
+        const connOptions = {
             host,
             port,
             user,
             password,
-            multipleStatements: true
-        });
+            multipleStatements: true,
+            connectTimeout: 20000
+        };
+        if (process.env.DB_SSL === 'true' || (isRemote && process.env.DB_SSL !== 'false')) {
+            connOptions.ssl = { rejectUnauthorized: false };
+        }
+        // Connect to server (without selecting DB first)
+        connection = await mysql.createConnection(connOptions);
         console.log('Connection successful!');
 
         // Create database if not exists

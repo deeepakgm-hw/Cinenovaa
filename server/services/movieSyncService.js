@@ -31,7 +31,11 @@ function getDbConfig() {
 function getPool() {
     if (dbPool) return dbPool;
     const config = getDbConfig();
-    dbPool = mysql.createPool({
+    const isRemote = config.host !== 'localhost' && config.host !== '127.0.0.1';
+    
+    console.log(`[DB] Initializing MySQL pool for ${config.user}@${config.host}:${config.port}/${config.database} (SSL: ${isRemote || process.env.DB_SSL === 'true'})`);
+
+    const poolOptions = {
         host: config.host,
         port: config.port,
         user: config.user,
@@ -39,8 +43,15 @@ function getPool() {
         database: config.database,
         waitForConnections: true,
         connectionLimit: 10,
-        queueLimit: 0
-    });
+        queueLimit: 0,
+        connectTimeout: 20000
+    };
+
+    if (process.env.DB_SSL === 'true' || (isRemote && process.env.DB_SSL !== 'false')) {
+        poolOptions.ssl = { rejectUnauthorized: false };
+    }
+
+    dbPool = mysql.createPool(poolOptions);
     return dbPool;
 }
 
