@@ -10,7 +10,8 @@ const api = axios.create({
 
 export const authApi = {
   sendOtp: (payload) => api.post('/auth/otp/send', payload),
-  verifyOtp: (payload) => api.post('/auth/otp/verify', payload)
+  verifyOtp: (payload) => api.post('/auth/otp/verify', payload),
+  googleAuth: (payload) => api.post('/auth/google', payload)
 }
 
 export const movieApi = {

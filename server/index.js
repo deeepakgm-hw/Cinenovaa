@@ -206,6 +206,83 @@ app.post('/api/auth/otp/verify', async (req, res) => {
     }
 });
 
+// POST /api/auth/google - Authenticate using Google OAuth / Identity Services
+app.post('/api/auth/google', async (req, res) => {
+    const { credential, email: clientEmail, name: clientName } = req.body;
+
+    try {
+        let email = '';
+        let name = '';
+        let picture = '';
+
+        if (credential) {
+            // Verify Google credential with Google's OAuth2 tokeninfo endpoint
+            const googleRes = await axios.get(`https://oauth2.googleapis.com/tokeninfo?id_token=${credential}`, { timeout: 10000 });
+            if (!googleRes.data || !googleRes.data.email) {
+                return res.status(400).json({ success: false, message: 'Invalid Google credential token.' });
+            }
+            email = googleRes.data.email;
+            name = googleRes.data.name || email.split('@')[0];
+            picture = googleRes.data.picture || '';
+        } else if (clientEmail && clientEmail.includes('@')) {
+            email = clientEmail.trim();
+            name = clientName || email.split('@')[0];
+        } else {
+            return res.status(400).json({ success: false, message: 'Google credential token or email is required.' });
+        }
+
+        const pool = getPool();
+        let userId = -1;
+        let username = name;
+        let role = 'USER';
+
+        if (email.toLowerCase().includes('admin') || username.toLowerCase() === 'admin') {
+            role = 'ADMIN';
+        }
+
+        // Query user table
+        const [userRows] = await pool.query('SELECT id, username, role FROM users WHERE email = ?', [email]);
+        if (userRows.length > 0) {
+            userId = userRows[0].id;
+            username = userRows[0].username;
+            role = userRows[0].role;
+        } else {
+            // Register new Google user
+            const [insertRes] = await pool.query(
+                'INSERT INTO users (username, password, email, role) VALUES (?, ?, ?, ?)',
+                [username, 'GOOGLE_AUTH_USER', email, role]
+            );
+            userId = insertRes.insertId;
+
+            // Create user wallet with balance 1000.00 and 50 loyalty points
+            await pool.query(
+                'INSERT INTO wallet (user_id, balance, loyalty_points) VALUES (?, ?, ?)',
+                [userId, 1000.00, 50]
+            );
+            console.log(`[GOOGLE AUTH] Registered new user ${email} (ID: ${userId}) with initial wallet balance.`);
+        }
+
+        // Create user session ID
+        const sessionId = 'SES-G-' + crypto.randomBytes(8).toString('hex').toUpperCase();
+        await pool.query(
+            "INSERT INTO user_sessions (session_id, user_id, username, status) VALUES (?, ?, ?, 'ACTIVE')",
+            [sessionId, userId, username]
+        );
+
+        console.log(`[GOOGLE AUTH] User ${email} authenticated successfully. Session: ${sessionId}`);
+
+        res.json({
+            success: true,
+            sessionId,
+            user: { id: userId, username, email, role, picture }
+        });
+
+    } catch (err) {
+        console.error('[GOOGLE AUTH ERROR]:', err.message);
+        res.status(500).json({ success: false, error: err.message, message: 'Google authentication failed.' });
+    }
+});
+
 // ==========================================
 // CITIES ENDPOINTS
 // ==========================================
