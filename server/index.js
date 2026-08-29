@@ -1,3 +1,5 @@
+const dns = require('dns');
+try { dns.setDefaultResultOrder('ipv4first'); } catch (e) {}
 require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
@@ -1363,7 +1365,7 @@ app.get('/api/movies/sync', async (req, res) => {
 app.get('/api/movies/now-playing', async (req, res) => {
     try {
         const pool = getPool();
-        const [rows] = await pool.query('SELECT * FROM movies WHERE status = "NOW_SHOWING" OR status = "POPULAR"');
+        const [rows] = await pool.query("SELECT * FROM movies WHERE status = 'NOW_SHOWING' OR status = 'POPULAR'");
         res.json(rows);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -1374,7 +1376,7 @@ app.get('/api/movies/now-playing', async (req, res) => {
 app.get('/api/movies/upcoming', async (req, res) => {
     try {
         const pool = getPool();
-        const [rows] = await pool.query('SELECT * FROM movies WHERE status = "COMING_SOON"');
+        const [rows] = await pool.query("SELECT * FROM movies WHERE status = 'COMING_SOON'");
         res.json(rows);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -1385,7 +1387,7 @@ app.get('/api/movies/upcoming', async (req, res) => {
 app.get('/api/movies/popular', async (req, res) => {
     try {
         const pool = getPool();
-        const [rows] = await pool.query('SELECT * FROM movies WHERE status = "POPULAR" OR status = "NOW_SHOWING" ORDER BY CAST(rating AS DECIMAL(3,1)) DESC LIMIT 10');
+        const [rows] = await pool.query("SELECT * FROM movies WHERE status = 'POPULAR' OR status = 'NOW_SHOWING' ORDER BY CAST(rating AS DECIMAL(3,1)) DESC LIMIT 10");
         res.json(rows);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -1439,7 +1441,7 @@ app.get('/api/movies', async (req, res) => {
             `;
             [rows] = await pool.query(sql, [cityId]);
         } else {
-            [rows] = await pool.query('SELECT * FROM movies WHERE status = "NOW_SHOWING" OR status = "POPULAR"');
+            [rows] = await pool.query("SELECT * FROM movies WHERE status = 'NOW_SHOWING' OR status = 'POPULAR'");
         }
         res.json(rows);
     } catch (err) {

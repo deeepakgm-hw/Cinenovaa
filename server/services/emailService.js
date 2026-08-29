@@ -1,6 +1,8 @@
 const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
+const dns = require('dns');
+try { dns.setDefaultResultOrder('ipv4first'); } catch (e) {}
 
 // Load environment variables directly
 require('dotenv').config();
@@ -18,6 +20,7 @@ function createTransporter() {
         host: EMAIL_HOST,
         port: EMAIL_PORT,
         secure: EMAIL_SECURE,
+        family: 4, // Force IPv4 to prevent ENETUNREACH in cloud environments like Render
         auth: {
             user: EMAIL_USER,
             pass: EMAIL_PASS
