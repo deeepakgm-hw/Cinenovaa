@@ -346,9 +346,11 @@ export default function PaymentPage() {
           }
         })
 
+      const effectiveUserId = (user.isGuest || !user.id || isNaN(user.id)) ? 999999 : user.id;
+
       const orderRes = await axios.post(`${API_BASE_URL}/payments/create-order`, {
         amount: finalAmount,
-        userId: user.id,
+        userId: effectiveUserId,
         showtimeId: showtime.id,
         seats: seats.join(','),
         paymentMethod: paymentMethod,
@@ -436,8 +438,10 @@ export default function PaymentPage() {
           }
         })
 
+      const effectiveUserId = (user.isGuest || !user.id || isNaN(user.id)) ? 999999 : user.id;
+
       const payload = {
-        userId: user.id,
+        userId: effectiveUserId,
         showtimeId: showtime.id,
         seats: seats.join(','),
         totalAmount: getFinalTotal(),

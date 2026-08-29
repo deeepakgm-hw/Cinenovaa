@@ -178,7 +178,12 @@ export default function MoviesPage() {
     if (!user) { alert('Please log in to create a group session.'); return }
     try {
       const r = await axios.post(`${API_BASE_URL}/group-sessions`, { showtimeId: st.id, organiserUserId: user.id })
-      if (r.data.success) { setGroupSessionData(r.data); setShowBookingModal(false); setShowShareModal(true) }
+      if (r.data.success) {
+        sessionStorage.setItem(`created_session_${r.data.sessionCode}`, 'true')
+        setGroupSessionData(r.data);
+        setShowBookingModal(false);
+        setShowShareModal(true);
+      }
     } catch (err) { alert(err.response?.data?.message || 'Failed to create group session.') }
   }
 

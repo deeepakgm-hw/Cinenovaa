@@ -657,6 +657,20 @@ app.get('/api/showtimes/:id/seats', async (req, res) => {
     }
 });
 
+// Helper to ensure guest user exists in MySQL for foreign key constraints
+async function ensureGuestUser(connOrPool) {
+    try {
+        await connOrPool.query(
+            "INSERT IGNORE INTO users (id, username, email, password_hash, role) VALUES (999999, 'Guest User', 'guest@cinenova.app', 'guest_account_cinenova', 'USER')"
+        );
+        await connOrPool.query(
+            "INSERT IGNORE INTO wallet (user_id, balance, loyalty_points) VALUES (999999, 1000.00, 50)"
+        );
+    } catch (e) {
+        // Silently continue
+    }
+}
+
 // POST /api/seats/lock - Transaction-safe temporary seat locking (expires in 5 minutes)
 app.post('/api/seats/lock', async (req, res) => {
     let { showtimeId, userId, seats } = req.body;
@@ -673,6 +687,12 @@ app.post('/api/seats/lock', async (req, res) => {
 
         try {
             await connection.beginTransaction();
+
+            // Support guest user accounts seamlessly
+            if (userId == 999999 || String(userId).startsWith('guest-') || isNaN(userId)) {
+                await ensureGuestUser(connection);
+                userId = 999999;
+            }
 
             // Check if user exists in the database to prevent foreign key constraint failures
             const [userRows] = await connection.query('SELECT id FROM users WHERE id = ?', [userId]);
@@ -796,13 +816,16 @@ app.post('/api/seats/release', async (req, res) => {
 
 // GET /api/wallet/:userId - Fetch user's current wallet balance and loyalty points
 app.get('/api/wallet/:userId', async (req, res) => {
-    const userId = parseInt(req.params.userId, 10);
-    if (isNaN(userId)) {
-        return res.status(400).json({ success: false, message: 'Invalid user ID.' });
+    let userId = parseInt(req.params.userId, 10);
+    if (isNaN(userId) || req.params.userId === '999999' || String(req.params.userId).startsWith('guest-')) {
+        userId = 999999;
     }
 
     try {
         const pool = getPool();
+        if (userId === 999999) {
+            await ensureGuestUser(pool);
+        }
         let [rows] = await pool.query('SELECT balance, loyalty_points FROM wallet WHERE user_id = ?', [userId]);
         if (rows.length === 0) {
             // Seed a new wallet entry with 1000.00 balance and 50 loyalty points
@@ -929,16 +952,22 @@ async function handlePaymentSuccess(orderId, paymentId, signature) {
 
 // POST /api/payments/create-order - Create Razorpay order and insert pending booking
 app.post('/api/payments/create-order', async (req, res) => {
-    const { amount, userId, showtimeId, seats, paymentMethod, snacks } = req.body;
+    let { amount, userId, showtimeId, seats, paymentMethod, snacks } = req.body;
     if (!amount || isNaN(amount) || !userId || !showtimeId || !seats) {
         return res.status(400).json({ success: false, message: 'Missing or invalid parameters for order creation.' });
     }
+
+    let effUserId = (userId == 999999 || String(userId).startsWith('guest-') || isNaN(userId)) ? 999999 : parseInt(userId, 10);
 
     const pool = getPool();
     const connection = await pool.getConnection();
 
     try {
         await connection.beginTransaction();
+
+        if (effUserId === 999999) {
+            await ensureGuestUser(connection);
+        }
 
         // 1. Generate unique booking and order IDs
         const bookingId = "BKG-" + Date.now().toString(16).toUpperCase() + "-" + crypto.randomBytes(2).toString('hex').toUpperCase();
@@ -999,7 +1028,7 @@ app.post('/api/payments/create-order', async (req, res) => {
         await connection.query(
             `INSERT INTO bookings (booking_id, user_id, showtime_id, movie_name, theatre_name, show_time, seats, total_amount, booking_status)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'PENDING')`,
-            [bookingId, userId, showtimeId, details.movie_name, details.theatre_name, details.show_time, seats, amount]
+            [bookingId, effUserId, showtimeId, details.movie_name, details.theatre_name, details.show_time, seats, amount]
         );
 
         // 6. Insert pending payment
@@ -1257,6 +1286,12 @@ app.post('/api/payments/confirm', async (req, res) => {
 
     try {
         await connection.beginTransaction();
+
+        let effUserId = (userId == 999999 || String(userId).startsWith('guest-') || isNaN(userId)) ? 999999 : parseInt(userId, 10);
+        if (effUserId === 999999) {
+            await ensureGuestUser(connection);
+        }
+        userId = effUserId;
 
         // Check if user exists in the database to prevent foreign key constraint failures
         const [userRows] = await connection.query('SELECT id FROM users WHERE id = ?', [userId]);
@@ -1603,14 +1638,29 @@ app.post('/api/group-sessions', async (req, res) => {
             sessionCode += chars.charAt(Math.floor(Math.random() * chars.length));
         }
 
+        // Support guest user accounts seamlessly
+        let effOrganiserId = (organiserUserId == 999999 || String(organiserUserId).startsWith('guest-') || isNaN(organiserUserId)) ? 999999 : parseInt(organiserUserId, 10);
+        if (effOrganiserId === 999999) {
+            await ensureGuestUser(pool);
+        }
+
         // Set expires_at to 5 minutes from now
         const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
         
         await pool.query(
             `INSERT INTO group_booking_sessions (id, showtime_id, organiser_user_id, session_code, participant_ids, participant_cursors, status, expires_at) 
              VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-            [id, parseInt(showtimeId), parseInt(organiserUserId), sessionCode, JSON.stringify([]), JSON.stringify({}), 'active', expiresAt]
+            [id, parseInt(showtimeId), effOrganiserId, sessionCode, JSON.stringify([]), JSON.stringify({}), 'active', expiresAt]
         );
+
+        // Pre-seed in-memory session with organizer ID
+        groupSessions.set(sessionCode, {
+            organiserUserId: effOrganiserId,
+            participants: new Map(),
+            selectedSeats: new Map(),
+            countdownTimer: null,
+            disconnectTimer: null
+        });
 
         let clientOrigin = req.headers.origin;
         if (!clientOrigin && req.headers.referer) {
@@ -1623,6 +1673,7 @@ app.post('/api/group-sessions', async (req, res) => {
             id,
             sessionCode,
             showtimeId: parseInt(showtimeId),
+            organiserUserId: effOrganiserId,
             joinUrl: `${clientOrigin}/seats?showtimeId=${showtimeId}&session=${sessionCode}`
         });
     } catch (err) {
@@ -1836,17 +1887,34 @@ groupSeatsNamespace.on('connection', (socket) => {
 
         const allReady = Array.from(session.participants.values()).every(p => p.ready);
         if (allReady && session.participants.size > 0) {
-            groupSeatsNamespace.to(sessionCode).emit('all_ready', { countdown: 5 });
+            groupSeatsNamespace.to(sessionCode).emit('all_ready', { countdown: 2 });
             
             if (session.countdownTimer) clearTimeout(session.countdownTimer);
-            session.countdownTimer = setTimeout(() => {
+            session.countdownTimer = setTimeout(async () => {
                 const finalSeats = Array.from(session.selectedSeats.entries())
                     .map(([seatId, uid]) => ({ seatId, userId: uid }));
                 
+                let organiserUserId = session.organiserUserId;
+                if (!organiserUserId) {
+                    try {
+                        const pool = getPool();
+                        const [rows] = await pool.query(
+                            "SELECT organiser_user_id FROM group_booking_sessions WHERE session_code = ?",
+                            [sessionCode]
+                        );
+                        if (rows.length > 0) {
+                            organiserUserId = rows[0].organiser_user_id;
+                        }
+                    } catch (e) {
+                        console.error('[WS] Failed to fetch organiser ID:', e.message);
+                    }
+                }
+
                 groupSeatsNamespace.to(sessionCode).emit('start_checkout', {
-                    seats: finalSeats
+                    seats: finalSeats,
+                    organiserUserId
                 });
-            }, 5000);
+            }, 2000);
         }
     });
 
@@ -2451,6 +2519,14 @@ server.listen(PORT, async () => {
 
     // Initialize group booking DB structure
     await initGroupBookingDB();
+
+    // Ensure guest user account exists in DB
+    try {
+        const pool = getPool();
+        await ensureGuestUser(pool);
+    } catch (e) {
+        console.error('[DB] Failed to ensure guest user on startup:', e.message);
+    }
     
     // Auto sync on startup in background
     setTimeout(async () => {

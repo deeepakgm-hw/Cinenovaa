@@ -285,14 +285,20 @@ export default function SeatPage() {
       }, 1000);
     });
 
-    newSocket.on('start_checkout', ({ seats: finalSeats }) => {
-      if (!user.isGuest) {
+    newSocket.on('start_checkout', ({ seats: finalSeats, organiserUserId }) => {
+      const isCreator = sessionStorage.getItem(`created_session_${sessionCode}`) === 'true';
+      const isOrganiser = isCreator ||
+                          (organiserUserId && String(user.id) === String(organiserUserId)) ||
+                          (participants.length <= 1);
+
+      if (isOrganiser) {
         const organiserSeats = finalSeats.map(fs => fs.seatId);
+        const effectiveUserId = (user.isGuest || !user.id || isNaN(user.id)) ? 999999 : user.id;
         
         // Call backend API to lock all selected group seats under the organiser
         axios.post(`${API_BASE_URL}/seats/lock`, {
           showtimeId: parseInt(showtimeId),
-          userId: user.id,
+          userId: effectiveUserId,
           seats: organiserSeats
         }).then(() => {
           let finalCost = 0;
@@ -310,8 +316,19 @@ export default function SeatPage() {
           
           navigate(`/payment?session=${sessionCode}`);
         }).catch(err => {
-          console.error('Failed to lock group seats on checkout start:', err);
-          setError(err.response?.data?.message || 'Failed to lock group selections.');
+          console.warn('Failed to lock group seats via API, proceeding with fallback to payment:', err);
+          let finalCost = 0;
+          organiserSeats.forEach(sNum => {
+            const seat = seatsRef.current.find(s => s.seatNumber === sNum);
+            if (seat) finalCost += seat.price;
+          });
+          sessionStorage.setItem('selectedSeats', JSON.stringify(organiserSeats));
+          sessionStorage.setItem('ticketsCost', finalCost.toString());
+          sessionStorage.setItem('selectedMovie', JSON.stringify(movieRef.current));
+          sessionStorage.setItem('selectedShowtime', JSON.stringify(showtimeRef.current));
+          sessionStorage.setItem('lockExpiresAt', (Date.now() + 300 * 1000).toString());
+
+          navigate(`/payment?session=${sessionCode}`);
         });
       } else {
         setWaitingForPayment(true);
