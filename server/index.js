@@ -1252,7 +1252,7 @@ app.post('/api/payments/cancel', async (req, res) => {
 
 // POST /api/payments/confirm - Process secure payment and finalize booking transaction
 app.post('/api/payments/confirm', async (req, res) => {
-    const { 
+    let { 
         userId, showtimeId, seats, totalAmount, paymentMethod, snacks,
         razorpayPaymentId, razorpayOrderId, razorpaySignature 
     } = req.body;
