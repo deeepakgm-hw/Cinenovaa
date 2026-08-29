@@ -106,26 +106,26 @@ export default function NavBar({
               alignItems: 'center',
               gap: '6px',
               padding: '7px 14px',
-              background: 'rgba(155,93,229,0.12)',
+              background: 'var(--bg-elevated)',
               border: '1px solid rgba(155,93,229,0.35)',
               borderRadius: 'var(--radius-pill)',
-              color: '#c084fc',
+              color: 'var(--text-primary)',
               fontSize: '12px',
-              fontWeight: 700,
+              fontWeight: 600,
               fontFamily: 'var(--font-body)',
               cursor: 'pointer',
               transition: 'all var(--transition-base)',
               whiteSpace: 'nowrap',
             }}
             onMouseEnter={e => {
-              e.currentTarget.style.background = 'rgba(155,93,229,0.22)'
               e.currentTarget.style.borderColor = 'var(--brand-purple)'
-              e.currentTarget.style.boxShadow = '0 0 12px rgba(155,93,229,0.25)'
+              e.currentTarget.style.boxShadow = '0 0 10px rgba(155,93,229,0.2)'
+              e.currentTarget.style.color = '#c084fc'
             }}
             onMouseLeave={e => {
-              e.currentTarget.style.background = 'rgba(155,93,229,0.12)'
               e.currentTarget.style.borderColor = 'rgba(155,93,229,0.35)'
               e.currentTarget.style.boxShadow = 'none'
+              e.currentTarget.style.color = 'var(--text-primary)'
             }}
           >
             <Users size={14} style={{ color: '#c084fc', flexShrink: 0 }} />
