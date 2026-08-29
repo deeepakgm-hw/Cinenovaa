@@ -756,7 +756,7 @@ app.post('/api/seats/lock', async (req, res) => {
             // Insert new locks using database-native NOW() to avoid timezone mismatch issues
             for (const seat of seats) {
                 await connection.query(
-                    'INSERT INTO seat_locks (showtime_id, seat_number, user_id, status, expires_at) VALUES (?, ?, ?, "LOCKED", DATE_ADD(NOW(), INTERVAL 5 MINUTE))',
+                    "INSERT INTO seat_locks (showtime_id, seat_number, user_id, status, expires_at) VALUES (?, ?, ?, 'LOCKED', DATE_ADD(NOW(), INTERVAL 5 MINUTE))",
                     [showtimeId, seat, userId]
                 );
             }
