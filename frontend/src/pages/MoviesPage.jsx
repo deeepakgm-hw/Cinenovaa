@@ -429,36 +429,36 @@ export default function MoviesPage() {
           <div className="animate-fade-in" style={{ width: '100%', maxWidth: '700px', background: 'var(--bg-modal)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-xl)', padding: '22px 18px', position: 'relative', boxShadow: 'var(--shadow-lg)', margin: '16px auto', maxHeight: '92vh', overflowY: 'auto' }}>
 
             {/* Close */}
-            <button onClick={() => setShowBookingModal(false)} style={{ position: 'absolute', top: '20px', right: '20px', width: '36px', height: '36px', borderRadius: '50%', background: 'var(--bg-elevated)', border: '1px solid var(--border-default)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-secondary)', transition: 'all var(--transition-base)' }}
+            <button onClick={() => setShowBookingModal(false)} style={{ position: 'absolute', top: '16px', right: '16px', width: '34px', height: '34px', borderRadius: '50%', background: 'var(--bg-elevated)', border: '1px solid var(--border-default)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-secondary)', transition: 'all var(--transition-base)', zIndex: 10 }}
               onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-hover)'; e.currentTarget.querySelector('svg').style.color = 'var(--brand-red)' }}
               onMouseLeave={e => { e.currentTarget.style.background = 'var(--bg-elevated)'; e.currentTarget.querySelector('svg').style.color = '' }}
             ><X size={16} /></button>
 
             {/* Movie header */}
-            <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start', paddingBottom: '24px', borderBottom: '1px solid var(--border-subtle)', marginBottom: '24px' }}>
-              <div style={{ width: '72px', height: '96px', borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid var(--border-subtle)', flexShrink: 0 }}>
+            <div style={{ display: 'flex', gap: '14px', alignItems: 'center', paddingBottom: '16px', borderBottom: '1px solid var(--border-subtle)', marginBottom: '16px', paddingRight: '40px' }}>
+              <div style={{ width: '56px', height: '76px', borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid var(--border-subtle)', flexShrink: 0 }}>
                 <img src={getMovieImageUrl(selectedMovie, false)} alt={selectedMovie.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </div>
-              <div style={{ flex: 1 }}>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '8px', alignItems: 'center' }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '6px', alignItems: 'center' }}>
                   <Badge variant={selectedMovie.status === 'COMING_SOON' ? 'purple' : 'red'}>{selectedMovie.status === 'COMING_SOON' ? 'Upcoming' : 'Now Showing'}</Badge>
                   {selectedMovie.rating && <Badge variant="gold" icon={<Star size={9} fill="#f59e0b" />}>{parseFloat(selectedMovie.rating) > 0 ? parseFloat(selectedMovie.rating).toFixed(1) : '9.0'}</Badge>}
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600 }}><Clock size={12} /> {selectedMovie.duration} Mins</span>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600 }}><Clock size={11} /> {selectedMovie.duration}m</span>
                 </div>
-                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '28px', color: 'var(--text-primary)', margin: '0 0 8px', lineHeight: 1.1 }}>{selectedMovie.title}</h3>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
-                  {selectedMovie.genre && selectedMovie.genre.split(',').map((g, i) => <Badge key={i} variant="ghost">{g.trim()}</Badge>)}
+                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '22px', color: 'var(--text-primary)', margin: 0, lineHeight: 1.1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{selectedMovie.title}</h3>
+                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center', marginTop: '6px' }}>
+                  {selectedMovie.genre && selectedMovie.genre.split(',').slice(0, 2).map((g, i) => <Badge key={i} variant="ghost">{g.trim()}</Badge>)}
                   {selectedMovie.language && <Badge variant="purple">{selectedMovie.language}</Badge>}
                 </div>
               </div>
             </div>
 
             {/* Step indicator */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', gap: '8px' }}>
               <Badge variant="red">{bookingModeShowtime ? 'Select Booking Mode' : bookingStep === 1 ? 'Select Theatre' : 'Select Showtime'}</Badge>
               {bookingStep === 2 && !bookingModeShowtime && (
-                <button onClick={() => setBookingStep(1)} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'var(--bg-elevated)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-pill)', padding: '6px 14px', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', cursor: 'pointer', fontFamily: 'var(--font-body)', transition: 'all var(--transition-base)' }}>
-                  <ArrowLeft size={13} /> Back to Theatres
+                <button onClick={() => setBookingStep(1)} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'var(--bg-elevated)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-pill)', padding: '5px 12px', fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', cursor: 'pointer', fontFamily: 'var(--font-body)', transition: 'all var(--transition-base)' }}>
+                  <ArrowLeft size={12} /> Back to Theatres
                 </button>
               )}
             </div>
@@ -466,17 +466,17 @@ export default function MoviesPage() {
             {/* ── BOOKING MODE SELECTOR ── */}
             {bookingModeShowtime ? (
               <div className="animate-fade-in">
-                <button onClick={() => setBookingModeShowtime(null)} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'var(--bg-elevated)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-pill)', padding: '6px 14px', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', cursor: 'pointer', fontFamily: 'var(--font-body)', marginBottom: '20px', transition: 'all var(--transition-base)' }}>
-                  <ArrowLeft size={13} /> Back to Showtimes
+                <button onClick={() => setBookingModeShowtime(null)} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'var(--bg-elevated)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-pill)', padding: '5px 12px', fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', cursor: 'pointer', fontFamily: 'var(--font-body)', marginBottom: '16px', transition: 'all var(--transition-base)' }}>
+                  <ArrowLeft size={12} /> Back to Showtimes
                 </button>
 
-                <div style={{ marginBottom: '20px' }}>
-                  <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: '0 0 4px' }}>
+                <div style={{ marginBottom: '16px' }}>
+                  <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: 0 }}>
                     Booking for <strong style={{ color: 'var(--text-primary)' }}>{bookingModeShowtime.screenName}</strong> at <strong style={{ color: 'var(--text-primary)' }}>{fmtTime(bookingModeShowtime.showTime)}</strong>
                   </p>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {/* Standard */}
                   <ModeCard
                     selected={bookingMode === 'solo'}
@@ -638,8 +638,8 @@ export default function MoviesPage() {
       {/* ═══════════════ GROUP SHARE MODAL ═══════════════ */}
       {showShareModal && groupSessionData && (
         <div style={S.modalBackdrop}>
-          <div className="animate-fade-in" style={{ width: '100%', maxWidth: '440px', background: 'var(--bg-modal)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-xl)', padding: '40px', position: 'relative', boxShadow: 'var(--shadow-lg)' }}>
-            <button onClick={() => setShowShareModal(false)} style={{ position: 'absolute', top: '20px', right: '20px', width: '36px', height: '36px', borderRadius: '50%', background: 'var(--bg-elevated)', border: '1px solid var(--border-default)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-secondary)' }}>
+          <div className="animate-fade-in" style={{ width: '100%', maxWidth: '440px', background: 'var(--bg-modal)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-xl)', padding: '24px 18px', position: 'relative', boxShadow: 'var(--shadow-lg)', maxHeight: '92vh', overflowY: 'auto' }}>
+            <button onClick={() => setShowShareModal(false)} style={{ position: 'absolute', top: '16px', right: '16px', width: '34px', height: '34px', borderRadius: '50%', background: 'var(--bg-elevated)', border: '1px solid var(--border-default)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-secondary)' }}>
               <X size={16} />
             </button>
             <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
@@ -710,17 +710,18 @@ function ModeCard({ selected, onClick, icon, title, desc, accent = 'red' }) {
   const iconColor = selected ? (accent === 'red' ? 'var(--brand-red)' : 'var(--brand-purple)') : 'var(--text-tertiary)'
 
   return (
-    <div onClick={onClick} style={{ padding: '20px', borderRadius: 'var(--radius-lg)', border: `1px solid ${borderColor}`, background: bgColor, cursor: 'pointer', transition: 'all var(--transition-base)', display: 'flex', flexDirection: 'column', gap: '12px' }}
+    <div onClick={onClick} style={{ padding: '14px 16px', borderRadius: 'var(--radius-lg)', border: `1px solid ${borderColor}`, background: bgColor, cursor: 'pointer', transition: 'all var(--transition-base)', display: 'flex', alignItems: 'center', gap: '14px' }}
       onMouseEnter={e => { if (!selected) { e.currentTarget.style.borderColor = 'var(--border-default)'; e.currentTarget.style.background = 'var(--bg-hover)' }}}
       onMouseLeave={e => { if (!selected) { e.currentTarget.style.borderColor = 'var(--border-subtle)'; e.currentTarget.style.background = 'var(--bg-elevated)' }}}
     >
-      <div style={{ width: '40px', height: '40px', borderRadius: 'var(--radius-md)', background: selected ? (accent === 'red' ? 'rgba(232,54,74,0.15)' : 'rgba(155,93,229,0.15)') : 'var(--bg-surface)', border: '1px solid var(--border-default)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: iconColor, transition: 'all var(--transition-base)' }}>
+      <div style={{ width: '44px', height: '44px', borderRadius: 'var(--radius-md)', background: selected ? (accent === 'red' ? 'rgba(232,54,74,0.15)' : 'rgba(155,93,229,0.15)') : 'var(--bg-surface)', border: '1px solid var(--border-default)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: iconColor, flexShrink: 0, transition: 'all var(--transition-base)' }}>
         {icon}
       </div>
-      <div>
-        <p style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.04em', margin: '0 0 4px' }}>{title}</p>
-        <p style={{ fontSize: '11px', color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>{desc}</p>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <p style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.03em', margin: '0 0 2px' }}>{title}</p>
+        <p style={{ fontSize: '11px', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>{desc}</p>
       </div>
+      <ChevronRight size={16} color="var(--text-tertiary)" style={{ flexShrink: 0 }} />
     </div>
   )
 }
