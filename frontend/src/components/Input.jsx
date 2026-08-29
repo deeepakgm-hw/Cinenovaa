@@ -7,6 +7,8 @@ export default function Input({
   hint = '',
   className = '',
   wrapperClassName = '',
+  fieldClassName = '',
+  fieldStyle = {},
   ...props
 }) {
   return (
@@ -16,7 +18,10 @@ export default function Input({
           {label}
         </label>
       )}
-      <div className={['cn-input-field', error ? 'cn-input-field--error' : ''].filter(Boolean).join(' ')}>
+      <div 
+        className={['cn-input-field', error ? 'cn-input-field--error' : '', fieldClassName].filter(Boolean).join(' ')}
+        style={fieldStyle}
+      >
         {iconLeft && <span className="cn-input-icon cn-input-icon--left">{iconLeft}</span>}
         <input
           id={id}

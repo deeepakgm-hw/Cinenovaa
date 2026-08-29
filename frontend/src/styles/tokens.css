@@ -174,13 +174,14 @@
   display: flex;
   align-items: center;
   background: var(--bg-elevated);
-  border: 1px solid #2d3343; /* Neutral muted dark grey border */
+  border: 1px solid rgba(255, 255, 255, 0.12); /* Clean, semi-transparent neutral grey border */
   border-radius: var(--radius-md);
+  box-shadow: none;
   transition: border var(--transition-base), box-shadow var(--transition-base);
 }
 .cn-input-field:focus-within {
-  border-color: #4b5563; /* Neutral muted grey border on focus */
-  box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.2); /* Neutral muted dark grey ring instead of red-pink */
+  border-color: rgba(255, 255, 255, 0.28); /* Subtle clean neutral grey focus border */
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05); /* Clean neutral grey halo, no magenta */
 }
 .cn-input-field--error {
   border-color: var(--color-error);

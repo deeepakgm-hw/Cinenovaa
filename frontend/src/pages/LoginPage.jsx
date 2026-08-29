@@ -273,6 +273,10 @@ export default function LoginPage() {
               onChange={e => setEmail(e.target.value)}
               iconLeft={<Mail size={15} color="#94a3b8" />}
               onKeyDown={e => e.key === 'Enter' && handleSendOtp()}
+              fieldStyle={{
+                border: '1px solid rgba(255, 255, 255, 0.14)',
+                boxShadow: 'none',
+              }}
             />
 
             {/* CTA */}
