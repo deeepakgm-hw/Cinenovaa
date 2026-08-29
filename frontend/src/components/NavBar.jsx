@@ -23,23 +23,26 @@ export default function NavBar({
       background: 'rgba(8,10,15,0.72)',
       borderBottom: '1px solid var(--border-subtle)',
     }}>
-      <div style={{
-        maxWidth: '1280px',
-        margin: '0 auto',
-        padding: '0 24px',
-        height: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: '16px',
-      }}>
+      <div
+        className="px-3 sm:px-6"
+        style={{
+          maxWidth: '1280px',
+          margin: '0 auto',
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '8px',
+          width: '100%',
+        }}
+      >
 
         {/* ── Logo ── */}
         <Link to="/movies" style={{ textDecoration: 'none', flexShrink: 0 }}>
           <span style={{
             fontFamily: 'var(--font-body)',
             fontWeight: 900,
-            fontSize: '22px',
+            fontSize: '20px',
             color: 'var(--text-primary)',
             letterSpacing: '-0.02em',
           }}>
@@ -98,7 +101,7 @@ export default function NavBar({
         )}
 
         {/* ── Right Cluster ── */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
 
           {/* Join Group Booking Button */}
           <button
@@ -107,13 +110,13 @@ export default function NavBar({
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '6px',
-              padding: '7px 12px',
+              gap: '4px',
+              padding: '6px 10px',
               background: 'var(--bg-elevated)',
               border: '1px solid rgba(155,93,229,0.35)',
               borderRadius: 'var(--radius-pill)',
               color: 'var(--text-primary)',
-              fontSize: '12px',
+              fontSize: '11px',
               fontWeight: 600,
               fontFamily: 'var(--font-body)',
               cursor: 'pointer',
@@ -131,42 +134,45 @@ export default function NavBar({
               e.currentTarget.style.color = 'var(--text-primary)'
             }}
           >
-            <Users size={14} style={{ color: '#c084fc', flexShrink: 0 }} />
-            <span>Join Group</span>
+            <Users size={13} style={{ color: '#c084fc', flexShrink: 0 }} />
+            <span className="hidden sm:inline">Join Group</span>
+            <span className="sm:hidden">Join</span>
           </button>
 
           {/* Location Pill */}
           {selectedCity && (
             <button
               onClick={onCityClick}
+              title={`Selected City: ${selectedCity.name}`}
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px',
-                padding: '7px 14px',
+                gap: '4px',
+                padding: '6px 9px',
                 background: 'var(--bg-elevated)',
                 border: '1px solid var(--border-default)',
                 borderRadius: 'var(--radius-pill)',
                 color: 'var(--text-primary)',
-                fontSize: '12px',
+                fontSize: '11px',
                 fontWeight: 600,
                 fontFamily: 'var(--font-body)',
                 cursor: 'pointer',
                 transition: 'all var(--transition-base)',
                 whiteSpace: 'nowrap',
+                maxWidth: '110px',
               }}
               onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--border-active)'}
               onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border-default)'}
             >
-              <MapPin size={14} style={{ color: 'var(--brand-red)', flexShrink: 0 }} />
-              <span>{selectedCity.name}</span>
-              <ChevronDown size={13} style={{ color: 'var(--text-tertiary)' }} />
+              <MapPin size={12} style={{ color: 'var(--brand-red)', flexShrink: 0 }} />
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{selectedCity.name}</span>
+              <ChevronDown size={11} style={{ color: 'var(--text-tertiary)', flexShrink: 0 }} />
             </button>
           )}
 
-          {/* Greeting */}
+          {/* Greeting - only on larger screens */}
           {user && (
-            <span style={{ fontSize: '13px', fontFamily: 'var(--font-body)', whiteSpace: 'nowrap' }}>
+            <span className="hidden md:inline" style={{ fontSize: '12px', fontFamily: 'var(--font-body)', whiteSpace: 'nowrap' }}>
               <span style={{ color: 'var(--text-secondary)' }}>Hi, </span>
               <span style={{ color: 'var(--text-primary)', fontWeight: 700 }}>{user.username}</span>
             </span>
@@ -176,8 +182,16 @@ export default function NavBar({
           {onLogout && (
             <button
               onClick={onLogout}
-              className="cn-btn cn-btn-secondary cn-btn-sm"
-              style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+              className="cn-btn cn-btn-secondary"
+              title="Sign Out"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                padding: '6px 9px',
+                height: '30px',
+                fontSize: '11px',
+              }}
               onMouseEnter={e => {
                 e.currentTarget.style.borderColor = 'var(--border-active)'
                 e.currentTarget.style.color = 'var(--brand-red)'
@@ -188,7 +202,7 @@ export default function NavBar({
               }}
             >
               <LogOut size={13} />
-              Sign Out
+              <span className="hidden sm:inline">Sign Out</span>
             </button>
           )}
         </div>
