@@ -166,7 +166,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--text-tertiary);
+  color: #94a3b8; /* Lighter, readable grey with high contrast */
 }
 
 .cn-input-field {
@@ -174,13 +174,13 @@
   display: flex;
   align-items: center;
   background: var(--bg-elevated);
-  border: 1px solid var(--border-default);
+  border: 1px solid #2d3343; /* Neutral muted dark grey border */
   border-radius: var(--radius-md);
   transition: border var(--transition-base), box-shadow var(--transition-base);
 }
 .cn-input-field:focus-within {
-  border-color: var(--border-active);
-  box-shadow: 0 0 0 3px rgba(232,54,74,0.15);
+  border-color: #4b5563; /* Neutral muted grey border on focus */
+  box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.2); /* Neutral muted dark grey ring instead of red-pink */
 }
 .cn-input-field--error {
   border-color: var(--color-error);
@@ -198,7 +198,7 @@
   font-weight: 500;
   color: var(--text-primary);
 }
-.cn-input::placeholder { color: var(--text-tertiary); }
+.cn-input::placeholder { color: #64748b; opacity: 1; } /* Lighter, readable grey placeholder */
 .cn-input.pl-10 { padding-left: 40px; }
 .cn-input.pr-10 { padding-right: 40px; }
 
@@ -208,7 +208,7 @@
   transform: translateY(-50%);
   display: flex;
   align-items: center;
-  color: var(--text-tertiary);
+  color: #94a3b8;
   pointer-events: none;
 }
 .cn-input-icon--left  { left: 12px; }

@@ -271,9 +271,8 @@ export default function LoginPage() {
               placeholder="name@domain.com"
               value={email}
               onChange={e => setEmail(e.target.value)}
-              iconLeft={<Mail size={15} />}
+              iconLeft={<Mail size={15} color="#94a3b8" />}
               onKeyDown={e => e.key === 'Enter' && handleSendOtp()}
-              autoFocus
             />
 
             {/* CTA */}
@@ -282,10 +281,12 @@ export default function LoginPage() {
             </Button>
 
             {/* Divider */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div style={{ flex: 1, height: '1px', background: 'var(--border-subtle)' }} />
-              <span style={{ fontSize: '11px', color: 'var(--text-tertiary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>or</span>
-              <div style={{ flex: 1, height: '1px', background: 'var(--border-subtle)' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', margin: '2px 0' }}>
+              <div style={{ flex: 1, height: '1px', background: 'rgba(255, 255, 255, 0.12)' }} />
+              <span style={{ fontSize: '11px', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em' }}>
+                OR
+              </span>
+              <div style={{ flex: 1, height: '1px', background: 'rgba(255, 255, 255, 0.12)' }} />
             </div>
 
             {/* Continue with Google */}
