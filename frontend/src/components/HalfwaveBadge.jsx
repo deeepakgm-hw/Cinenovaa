@@ -24,7 +24,7 @@ export default function HalfwaveBadge({ size = 'md', prefix = 'by', className = 
 
   return (
     <div
-      className={halfwave-branding }
+      className={`halfwave-branding ${className || ''}`}
       style={{
         display: 'inline-flex',
         alignItems: 'center',
