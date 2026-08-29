@@ -5,7 +5,7 @@ const cron = require('node-cron');
 const cors = require('cors');
 const path = require('path');
 const crypto = require('crypto');
-const { runSync, searchMoviesApi, getPool } = require('./services/movieSyncService');
+const { runSync, searchMoviesApi, getPool, ensureBaseSchema } = require('./services/movieSyncService');
 const emailService = require('./services/emailService');
 const Razorpay = require('razorpay');
 const razorpay = (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET)
@@ -2347,6 +2347,9 @@ app.get('/api/status', async (req, res) => {
 server.listen(PORT, async () => {
     console.log(`[SERVER] Express server listening on http://localhost:${PORT}`);
     
+    // Automatically initialize tables if database is fresh
+    await ensureBaseSchema();
+
     // Initialize group booking DB structure
     await initGroupBookingDB();
     

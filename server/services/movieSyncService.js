@@ -44,7 +44,8 @@ function getPool() {
         waitForConnections: true,
         connectionLimit: 10,
         queueLimit: 0,
-        connectTimeout: 20000
+        connectTimeout: 20000,
+        multipleStatements: true
     };
 
     if (process.env.DB_SSL === 'true' || (isRemote && process.env.DB_SSL !== 'false')) {
@@ -55,12 +56,38 @@ function getPool() {
     return dbPool;
 }
 
+// Automatically initialize unified_schema.sql if tables do not exist
+async function ensureBaseSchema() {
+    const pool = getPool();
+    try {
+        const [tables] = await pool.query("SHOW TABLES LIKE 'movies'");
+        if (tables.length === 0) {
+            console.log('[DATABASE] Fresh database detected! Initializing complete unified_schema.sql...');
+            const schemaPath = path.join(__dirname, '../../database/unified_schema.sql');
+            if (fs.existsSync(schemaPath)) {
+                let schemaSql = fs.readFileSync(schemaPath, 'utf-8');
+                // Remove CREATE DATABASE and USE statements so it runs directly inside connected DB
+                schemaSql = schemaSql.replace(/CREATE DATABASE[^\n;]*;/gi, '');
+                schemaSql = schemaSql.replace(/USE [^\n;]*;/gi, '');
+
+                await pool.query('SET FOREIGN_KEY_CHECKS = 0');
+                await pool.query(schemaSql);
+                await pool.query('SET FOREIGN_KEY_CHECKS = 1');
+                console.log('[DATABASE] unified_schema.sql initialized successfully! All tables and seed data created.');
+            }
+        }
+    } catch (err) {
+        console.error('[DATABASE ERROR] Failed to initialize base schema:', err.message);
+    }
+}
+
 // Alter Table Helper on startup
 async function ensureSchemaExtended() {
+    await ensureBaseSchema();
     const pool = getPool();
     try {
         // Check if backdrop_url column exists
-        const [columns] = await pool.query('SHOW COLUMNS FROM movies LIKE "backdrop_url"');
+        const [columns] = await pool.query("SHOW COLUMNS FROM movies LIKE 'backdrop_url'");
         if (columns.length === 0) {
             console.log('[SYNC] Adding backdrop_url column to movies table...');
             await pool.query('ALTER TABLE movies ADD COLUMN backdrop_url VARCHAR(255) DEFAULT NULL');
@@ -672,5 +699,6 @@ async function searchMoviesApi(query) {
 module.exports = {
     runSync,
     searchMoviesApi,
-    getPool
+    getPool,
+    ensureBaseSchema
 };
