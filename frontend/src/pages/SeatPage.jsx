@@ -135,13 +135,19 @@ export default function SeatPage() {
   // Auth & Page configuration setup
   useEffect(() => {
     const initAuthAndDetails = async () => {
-      const storedUser = localStorage.getItem('user')
+      const storedUser = localStorage.getItem('user') || sessionStorage.getItem('user')
       let currentUser = null
       
       if (storedUser) {
-        currentUser = JSON.parse(storedUser)
-        setUser(currentUser)
-      } else if (sessionCode && guestName) {
+        try {
+          currentUser = JSON.parse(storedUser)
+          setUser(currentUser)
+        } catch (e) {
+          currentUser = null
+        }
+      } 
+      
+      if (!currentUser && sessionCode && guestName) {
         const guestId = sessionStorage.getItem('groupGuestId') || ('guest-' + Math.floor(100000 + Math.random() * 900000));
         sessionStorage.setItem('groupGuestId', guestId);
         currentUser = {
@@ -150,11 +156,20 @@ export default function SeatPage() {
           isGuest: true
         };
         setUser(currentUser);
-      } else if (sessionCode) {
+      } else if (!currentUser && sessionCode) {
         return;
-      } else {
-        navigate('/')
-        return
+      } else if (!currentUser) {
+        const guestUser = {
+          id: 999999,
+          username: 'Guest User',
+          email: 'guest@cinenova.app',
+          role: 'USER',
+          isGuest: true
+        };
+        sessionStorage.setItem('user', JSON.stringify(guestUser));
+        localStorage.setItem('user', JSON.stringify(guestUser));
+        currentUser = guestUser;
+        setUser(guestUser);
       }
 
       try {
@@ -420,7 +435,7 @@ export default function SeatPage() {
       try {
         await axios.post(`${API_BASE_URL}/seats/release`, {
           showtimeId: parseInt(showtimeId),
-          userId: user.id,
+          userId: user?.id || 999999,
           seats: seatsToProcess
         });
         
@@ -438,7 +453,7 @@ export default function SeatPage() {
       try {
         await axios.post(`${API_BASE_URL}/seats/lock`, {
           showtimeId: parseInt(showtimeId),
-          userId: user.id,
+          userId: user?.id || 999999,
           seats: seatsToProcess
         });
         
@@ -564,14 +579,20 @@ export default function SeatPage() {
     try {
       const payload = {
         showtimeId: parseInt(showtimeId),
-        userId: user.id,
+        userId: user?.id || 999999,
         seats: selectedSeats
       }
-      await axios.post(`${API_BASE_URL}/seats/lock`, payload)
+      try {
+        await axios.post(`${API_BASE_URL}/seats/lock`, payload)
+      } catch (lockErr) {
+        console.warn('Seat lock non-fatal warning during proceed:', lockErr.message)
+      }
       
       sessionStorage.setItem('selectedSeats', JSON.stringify(selectedSeats))
       sessionStorage.setItem('ticketsCost', calculateTotal().toString())
-      sessionStorage.setItem('lockExpiresAt', (Date.now() + timeLeft * 1000).toString())
+      sessionStorage.setItem('selectedMovie', JSON.stringify(movieRef.current || movie))
+      sessionStorage.setItem('selectedShowtime', JSON.stringify(showtimeRef.current || showtime))
+      sessionStorage.setItem('lockExpiresAt', (Date.now() + (timeLeft || 300) * 1000).toString())
       
       navigate('/payment')
     } catch (err) {

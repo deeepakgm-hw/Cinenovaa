@@ -661,13 +661,13 @@ app.get('/api/showtimes/:id/seats', async (req, res) => {
 async function ensureGuestUser(connOrPool) {
     try {
         await connOrPool.query(
-            "INSERT IGNORE INTO users (id, username, email, password_hash, role) VALUES (999999, 'Guest User', 'guest@cinenova.app', 'guest_account_cinenova', 'USER')"
+            "INSERT INTO users (id, username, password, email, role) VALUES (999999, 'Guest User', 'guest_account_cinenova', 'guest@cinenova.app', 'USER') ON DUPLICATE KEY UPDATE username='Guest User'"
         );
         await connOrPool.query(
-            "INSERT IGNORE INTO wallet (user_id, balance, loyalty_points) VALUES (999999, 1000.00, 50)"
+            "INSERT INTO wallet (user_id, balance, loyalty_points) VALUES (999999, 1000.00, 50) ON DUPLICATE KEY UPDATE balance=1000.00"
         );
     } catch (e) {
-        // Silently continue
+        console.error('[ENSURE GUEST USER ERROR]:', e.message);
     }
 }
 
