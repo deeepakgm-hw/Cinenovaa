@@ -49,13 +49,15 @@ export default function NavBar({
 
         {/* ── Search Bar ── */}
         {onSearch !== undefined && (
-          <div style={{
-            flex: 1,
-            maxWidth: '400px',
-            position: 'relative',
-            display: 'flex',
-            alignItems: 'center',
-          }}>
+          <div
+            className="hidden md:flex"
+            style={{
+              flex: 1,
+              maxWidth: '400px',
+              position: 'relative',
+              alignItems: 'center',
+            }}
+          >
             <Search
               size={15}
               style={{
@@ -96,16 +98,17 @@ export default function NavBar({
         )}
 
         {/* ── Right Cluster ── */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
 
           {/* Join Group Booking Button */}
           <button
             onClick={() => setShowJoinModal(true)}
+            title="Join Group Booking"
             style={{
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              padding: '7px 14px',
+              padding: '7px 12px',
               background: 'var(--bg-elevated)',
               border: '1px solid rgba(155,93,229,0.35)',
               borderRadius: 'var(--radius-pill)',
