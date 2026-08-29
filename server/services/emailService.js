@@ -16,14 +16,21 @@ let EMAIL_SECURE = process.env.EMAIL_SECURE === 'true';
 let transporter = createTransporter();
 
 function createTransporter() {
+    const isGmail = (EMAIL_USER && EMAIL_USER.includes('@gmail.com')) || (EMAIL_HOST && EMAIL_HOST.includes('gmail'));
+    if (isGmail) {
+        return nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: EMAIL_USER,
+                pass: EMAIL_PASS
+            }
+        });
+    }
+
     return nodemailer.createTransport({
         host: EMAIL_HOST,
         port: EMAIL_PORT,
         secure: EMAIL_PORT === 465 || EMAIL_SECURE,
-        family: 4, // Force IPv4
-        connectionTimeout: 8000,
-        greetingTimeout: 8000,
-        socketTimeout: 10000,
         auth: {
             user: EMAIL_USER,
             pass: EMAIL_PASS
