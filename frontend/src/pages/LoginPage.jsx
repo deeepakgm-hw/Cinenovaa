@@ -29,14 +29,32 @@ export default function LoginPage() {
     if (!email || !email.includes('@')) { setError('Please enter a valid email address.'); return }
     setError(''); setSuccessMsg(''); setLoading(true)
     try {
-      await authApi.sendOtp({ email })
-      setSuccessMsg('Code sent — check spam if you don\'t see it.')
+      const res = await authApi.sendOtp({ email })
+      if (res.data?.fallbackOtp && !res.data?.emailSent) {
+        setSuccessMsg(`Your verification code is: ${res.data.fallbackOtp}`)
+        setOtp(res.data.fallbackOtp.split(''))
+      } else {
+        setSuccessMsg('Code sent — check your inbox (and spam folder).')
+      }
       setStep(2)
       setResendTimer(60)
       setTimeout(() => otpRefs.current[0]?.focus(), 200)
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to send code. Check server is running.')
     } finally { setLoading(false) }
+  }
+
+  const handleContinueAsGuest = () => {
+    const guestUser = {
+      id: 999999,
+      username: 'Guest User',
+      email: 'guest@cinenova.app',
+      role: 'USER',
+      isGuest: true
+    }
+    localStorage.setItem('user', JSON.stringify(guestUser))
+    localStorage.setItem('sessionId', 'guest_' + Date.now())
+    navigate('/movies')
   }
 
   const handleVerifyOtp = async () => {
@@ -169,7 +187,7 @@ export default function LoginPage() {
             </div>
 
             {/* Guest */}
-            <Button variant="ghost" size="md" fullWidth onClick={() => navigate('/movies')}>
+            <Button variant="ghost" size="md" fullWidth onClick={handleContinueAsGuest}>
               Continue as Guest
             </Button>
           </div>

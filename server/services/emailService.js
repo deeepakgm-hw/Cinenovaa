@@ -19,8 +19,11 @@ function createTransporter() {
     return nodemailer.createTransport({
         host: EMAIL_HOST,
         port: EMAIL_PORT,
-        secure: EMAIL_SECURE,
-        family: 4, // Force IPv4 to prevent ENETUNREACH in cloud environments like Render
+        secure: EMAIL_PORT === 465 || EMAIL_SECURE,
+        family: 4, // Force IPv4
+        connectionTimeout: 8000,
+        greetingTimeout: 8000,
+        socketTimeout: 10000,
         auth: {
             user: EMAIL_USER,
             pass: EMAIL_PASS
