@@ -289,13 +289,30 @@ export default function LoginPage() {
               Send Verification Code
             </Button>
 
-            {/* Divider */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', margin: '2px 0' }}>
-              <div style={{ flex: 1, height: '1px', background: 'rgba(255, 255, 255, 0.12)' }} />
-              <span style={{ fontSize: '11px', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em' }}>
+            {/* Distinct Split Section: OR */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                width: '100%',
+                margin: '8px 0',
+                gap: '16px',
+              }}
+            >
+              <div style={{ flex: 1, height: '1px', background: 'rgba(255, 255, 255, 0.18)' }} />
+              <span
+                style={{
+                  fontSize: '11px',
+                  color: '#94a3b8',
+                  fontWeight: 800,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.14em',
+                  userSelect: 'none',
+                }}
+              >
                 OR
               </span>
-              <div style={{ flex: 1, height: '1px', background: 'rgba(255, 255, 255, 0.12)' }} />
+              <div style={{ flex: 1, height: '1px', background: 'rgba(255, 255, 255, 0.18)' }} />
             </div>
 
             {/* Continue with Google */}
