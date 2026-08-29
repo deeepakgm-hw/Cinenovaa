@@ -271,10 +271,15 @@ export default function LoginPage() {
               placeholder="name@domain.com"
               value={email}
               onChange={e => setEmail(e.target.value)}
-              iconLeft={<Mail size={15} color="#94a3b8" />}
+              iconLeft={<Mail size={15} color="#cbd5e1" />}
               onKeyDown={e => e.key === 'Enter' && handleSendOtp()}
+              labelStyle={{
+                color: '#e2e8f0',
+                fontWeight: 700,
+                letterSpacing: '0.08em',
+              }}
               fieldStyle={{
-                border: '1px solid rgba(255, 255, 255, 0.14)',
+                border: '1px solid rgba(255, 255, 255, 0.16)',
                 boxShadow: 'none',
               }}
             />

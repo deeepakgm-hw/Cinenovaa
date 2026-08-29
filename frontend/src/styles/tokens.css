@@ -166,7 +166,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #94a3b8; /* Lighter, readable grey with high contrast */
+  color: #e2e8f0; /* Brighter silver-grey for high contrast */
 }
 
 .cn-input-field {
@@ -174,14 +174,14 @@
   display: flex;
   align-items: center;
   background: var(--bg-elevated);
-  border: 1px solid rgba(255, 255, 255, 0.12); /* Clean, semi-transparent neutral grey border */
+  border: 1px solid rgba(255, 255, 255, 0.14); /* Clean, semi-transparent neutral grey border */
   border-radius: var(--radius-md);
   box-shadow: none;
   transition: border var(--transition-base), box-shadow var(--transition-base);
 }
 .cn-input-field:focus-within {
-  border-color: rgba(255, 255, 255, 0.28); /* Subtle clean neutral grey focus border */
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05); /* Clean neutral grey halo, no magenta */
+  border-color: rgba(255, 255, 255, 0.32); /* Subtle clean neutral grey focus border */
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.06); /* Clean neutral grey halo, no magenta */
 }
 .cn-input-field--error {
   border-color: var(--color-error);
@@ -199,7 +199,7 @@
   font-weight: 500;
   color: var(--text-primary);
 }
-.cn-input::placeholder { color: #64748b; opacity: 1; } /* Lighter, readable grey placeholder */
+.cn-input::placeholder { color: #94a3b8; opacity: 1; } /* Brighter silver-grey placeholder */
 .cn-input.pl-10 { padding-left: 40px; }
 .cn-input.pr-10 { padding-right: 40px; }
 
@@ -209,7 +209,7 @@
   transform: translateY(-50%);
   display: flex;
   align-items: center;
-  color: #94a3b8;
+  color: #cbd5e1; /* Brighter silver-grey icon */
   pointer-events: none;
 }
 .cn-input-icon--left  { left: 12px; }

@@ -9,12 +9,13 @@ export default function Input({
   wrapperClassName = '',
   fieldClassName = '',
   fieldStyle = {},
+  labelStyle = {},
   ...props
 }) {
   return (
     <div className={['cn-input-wrap', wrapperClassName].filter(Boolean).join(' ')}>
       {label && (
-        <label htmlFor={id} className="cn-input-label">
+        <label htmlFor={id} className="cn-input-label" style={labelStyle}>
           {label}
         </label>
       )}
