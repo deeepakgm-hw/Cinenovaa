@@ -80,17 +80,15 @@ app.post('/api/auth/otp/send', async (req, res) => {
             [email, otp]
         );
 
-        console.log(`[OTP ROUTE] Secure OTP generated for ${email}. Dispatching email in background...`);
+        console.log(`[OTP ROUTE] Secure OTP generated for ${email}. Dispatching email...`);
 
-        // 4. Dispatch the email asynchronously in background so HTTP response returns in <50ms
-        emailService.sendOTPEmail(email, otp, 5)
-            .then(() => console.log(`[OTP ROUTE] Email dispatched successfully to ${email}`))
-            .catch(err => console.error(`[OTP ROUTE WARNING] Background email dispatch failed: ${err.message}`));
+        // Send email via Gmail directly to user's inbox
+        await emailService.sendOTPEmail(email, otp, 5);
+        console.log(`[OTP ROUTE] Email dispatched successfully to ${email}`);
 
         res.json({ 
             success: true, 
-            message: 'A verification code has been sent to your Gmail inbox.',
-            fallbackOtp: otp
+            message: 'A verification code has been sent to your Gmail inbox. Please check your inbox and spam folder.'
         });
     } catch (err) {
         console.error('[OTP ROUTE ERROR] Failed to send OTP:', err.message);

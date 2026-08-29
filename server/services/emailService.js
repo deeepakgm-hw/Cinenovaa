@@ -7,11 +7,11 @@ try { dns.setDefaultResultOrder('ipv4first'); } catch (e) {}
 // Load environment variables directly
 require('dotenv').config();
 
-let EMAIL_USER = process.env.EMAIL_USER;
-let EMAIL_PASS = process.env.EMAIL_PASS;
+let EMAIL_USER = (process.env.EMAIL_USER || 'ticketscineplex24@gmail.com').trim();
+let EMAIL_PASS = (process.env.EMAIL_PASS || 'fuoi mavr bocp jqlr').trim();
 let EMAIL_HOST = process.env.EMAIL_HOST || 'smtp.gmail.com';
-let EMAIL_PORT = parseInt(process.env.EMAIL_PORT || '587', 10);
-let EMAIL_SECURE = process.env.EMAIL_SECURE === 'true';
+let EMAIL_PORT = parseInt(process.env.EMAIL_PORT || '465', 10);
+let EMAIL_SECURE = process.env.EMAIL_SECURE !== 'false';
 
 let transporter = createTransporter();
 

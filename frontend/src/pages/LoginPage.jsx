@@ -29,18 +29,14 @@ export default function LoginPage() {
     if (!email || !email.includes('@')) { setError('Please enter a valid email address.'); return }
     setError(''); setSuccessMsg(''); setLoading(true)
     try {
-      const res = await authApi.sendOtp({ email })
-      if (res.data?.fallbackOtp) {
-        setSuccessMsg(`Code sent to your email! (Your code: ${res.data.fallbackOtp})`)
-        setOtp(res.data.fallbackOtp.split(''))
-      } else {
-        setSuccessMsg('Code sent — check your inbox (and spam folder).')
-      }
+      await authApi.sendOtp({ email })
+      setSuccessMsg('Verification code sent to your email! Check your inbox (and spam folder).')
+      setOtp(['', '', '', '', '', ''])
       setStep(2)
       setResendTimer(60)
       setTimeout(() => otpRefs.current[0]?.focus(), 200)
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to send code. Check server is running.')
+      setError(err.response?.data?.message || 'Failed to send code. Please try again.')
     } finally { setLoading(false) }
   }
 
