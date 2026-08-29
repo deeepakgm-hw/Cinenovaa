@@ -12,6 +12,7 @@ import Button from '../components/Button'
 import Badge from '../components/Badge'
 import Input from '../components/Input'
 import ShowtimeChip from '../components/ShowtimeChip'
+import HalfwaveBadge from '../components/HalfwaveBadge'
 import axios from 'axios'
 import { QRCodeSVG } from 'qrcode.react'
 
@@ -341,6 +342,56 @@ export default function MoviesPage() {
           </div>
         )}
       </main>
+
+      {/* ── Footer ── */}
+      <footer style={{
+        borderTop: '1px solid var(--border-subtle)',
+        background: 'rgba(8,10,15,0.6)',
+        padding: '36px 16px 40px',
+        marginTop: '64px',
+        textAlign: 'center',
+      }}>
+        <div style={{
+          maxWidth: '1280px',
+          margin: '0 auto',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '10px',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <span style={{
+              fontFamily: 'var(--font-body)',
+              fontWeight: 900,
+              fontSize: '20px',
+              color: 'var(--text-primary)',
+              letterSpacing: '-0.02em',
+            }}>
+              Cine<span style={{ color: 'var(--brand-red)' }}>Nova</span>
+            </span>
+            <span style={{ color: 'var(--border-default)' }}>•</span>
+            <HalfwaveBadge size="md" prefix="by" />
+          </div>
+
+          <p style={{
+            fontSize: '12px',
+            color: 'var(--text-tertiary)',
+            margin: 0,
+            maxWidth: '520px',
+            lineHeight: 1.5,
+          }}>
+            Next-generation multiplex ticketing & group booking synchronization experience. Powered by Halfwave Platforms.
+          </p>
+
+          <div style={{
+            fontSize: '11px',
+            color: 'var(--text-tertiary)',
+            marginTop: '4px',
+          }}>
+            © {new Date().getFullYear()} CineNova. All rights reserved.
+          </div>
+        </div>
+      </footer>
 
       {/* ═══════════════ CITY MODAL ═══════════════ */}
       {showCityModal && (

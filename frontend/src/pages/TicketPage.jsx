@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import NavBar from '../components/NavBar'
 import { CheckCircle, Download } from 'lucide-react'
 import { API_ORIGIN } from '../config/apiConfig'
+import HalfwaveBadge from '../components/HalfwaveBadge'
 
 // Deterministic 21x21 QR Code visual matrix generator
 function QRCodeSVG({ value }) {
@@ -383,6 +384,8 @@ export default function TicketPage() {
             Return to Movies
           </button>
         </div>
+
+        <HalfwaveBadge size="sm" prefix="Verified by" className="mt-8 opacity-80" />
       </main>
     </div>
   )

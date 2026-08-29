@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Search, MapPin, ChevronDown, LogOut, Users } from 'lucide-react'
 import JoinGroupModal from './JoinGroupModal'
+import HalfwaveBadge from './HalfwaveBadge'
 
 export default function NavBar({
   search = '',
@@ -38,16 +39,17 @@ export default function NavBar({
       >
 
         {/* ── Logo ── */}
-        <Link to="/movies" style={{ textDecoration: 'none', flexShrink: 0 }}>
+        <Link to="/movies" style={{ textDecoration: 'none', flexShrink: 0, display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
           <span style={{
             fontFamily: 'var(--font-body)',
             fontWeight: 900,
-            fontSize: '20px',
+            fontSize: '19px',
             color: 'var(--text-primary)',
             letterSpacing: '-0.02em',
           }}>
             Cine<span style={{ color: 'var(--brand-red)' }}>Nova</span>
           </span>
+          <HalfwaveBadge size="xs" prefix="by" style={{ marginTop: '2px' }} />
         </Link>
 
         {/* ── Search Bar ── */}

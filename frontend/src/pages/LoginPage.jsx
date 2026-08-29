@@ -5,6 +5,7 @@ import { authApi } from '../services/api'
 import Badge from '../components/Badge'
 import Button from '../components/Button'
 import Input from '../components/Input'
+import HalfwaveBadge from '../components/HalfwaveBadge'
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -245,11 +246,11 @@ export default function LoginPage() {
         {step === 1 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             {/* Header */}
-            <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
-              <Badge variant="red">Premium Portal</Badge>
-              <h1 style={{ fontFamily: 'var(--font-body)', fontWeight: 900, fontSize: '32px', letterSpacing: '-0.03em', color: 'var(--text-primary)', lineHeight: 1 }}>
+            <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+              <h1 style={{ fontFamily: 'var(--font-body)', fontWeight: 900, fontSize: '34px', letterSpacing: '-0.03em', color: 'var(--text-primary)', lineHeight: 1, margin: 0 }}>
                 Cine<span style={{ color: 'var(--brand-red)' }}>Nova</span>
               </h1>
+              <HalfwaveBadge size="sm" prefix="by" style={{ marginTop: '2px', marginBottom: '4px' }} />
               <p style={{ fontSize: '13px', color: 'var(--text-secondary)', fontWeight: 500, margin: 0 }}>
                 Sign in to book tickets and track your orders
               </p>
