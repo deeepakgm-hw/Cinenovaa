@@ -5,13 +5,18 @@ node_modules/
 
 # Production builds
 dist/
+*/dist/
+**/dist/
 build/
 .dist/
 
-# Environment variables
+# Environment variables (NEVER commit secrets to git)
 .env
-.env.local
-.env.*.local
+.env.*
+*/.env
+*/.env.*
+**/.env
+**/.env.*
 *.env
 
 # Logs
