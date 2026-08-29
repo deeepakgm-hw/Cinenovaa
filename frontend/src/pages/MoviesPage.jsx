@@ -13,6 +13,7 @@ import Badge from '../components/Badge'
 import Input from '../components/Input'
 import ShowtimeChip from '../components/ShowtimeChip'
 import axios from 'axios'
+import { QRCodeSVG } from 'qrcode.react'
 
 /* ── Helpers ── */
 const getMovieImageUrl = (movie, isBackdrop = false) => {
@@ -673,17 +674,18 @@ export default function MoviesPage() {
                       <Button variant="primary" size="sm" iconLeft={<Copy size={13} />} onClick={() => navigator.clipboard.writeText(effectiveJoinUrl)}>Copy</Button>
                     </div>
 
-                    {/* QR mock */}
+                    {/* Real Scannable QR Code */}
                     <div style={{ padding: '16px', borderRadius: 'var(--radius-lg)', background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border-subtle)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
-                      <div style={{ width: '120px', height: '120px', background: '#fff', padding: '8px', borderRadius: 'var(--radius-md)' }}>
-                        <svg viewBox="0 0 100 100" fill="#080a0f" style={{ width: '100%', height: '100%' }}>
-                          <rect x="0" y="0" width="25" height="25" /><rect x="5" y="5" width="15" height="15" fill="#fff" /><rect x="9" y="9" width="7" height="7" />
-                          <rect x="75" y="0" width="25" height="25" /><rect x="80" y="5" width="15" height="15" fill="#fff" /><rect x="84" y="9" width="7" height="7" />
-                          <rect x="0" y="75" width="25" height="25" /><rect x="5" y="80" width="15" height="15" fill="#fff" /><rect x="9" y="84" width="7" height="7" />
-                          <rect x="35" y="10" width="10" height="20" /><rect x="55" y="5" width="15" height="10" /><rect x="30" y="45" width="20" height="10" /><rect x="60" y="35" width="15" height="25" /><rect x="10" y="40" width="10" height="15" /><rect x="40" y="70" width="25" height="20" /><rect x="75" y="75" width="15" height="15" />
-                        </svg>
+                      <div style={{ width: '136px', height: '136px', background: '#fff', padding: '8px', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <QRCodeSVG
+                          value={effectiveJoinUrl}
+                          size={120}
+                          bgColor="#ffffff"
+                          fgColor="#080a0f"
+                          level="M"
+                        />
                       </div>
-                      <span style={{ fontSize: '10px', color: 'var(--text-tertiary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Scan to Join</span>
+                      <span style={{ fontSize: '10px', color: 'var(--text-tertiary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Scan with Phone Camera to Join</span>
                     </div>
 
                     <Button variant="primary" size="lg" fullWidth iconLeft={<Ticket size={15} />} onClick={() => { setShowShareModal(false); navigate(`/seats?showtimeId=${sId}&session=${groupSessionData.sessionCode}`); }}>
