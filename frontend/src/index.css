@@ -91,3 +91,117 @@ body {
   -webkit-backdrop-filter: blur(20px) saturate(160%);
   border: 1px solid var(--border-subtle);
 }
+
+/* ── Mobile Responsive Utilities ── */
+.cn-movies-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (min-width: 640px) {
+  .cn-movies-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+}
+@media (min-width: 768px) {
+  .cn-movies-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+  }
+}
+@media (min-width: 1024px) {
+  .cn-movies-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 20px;
+  }
+}
+@media (min-width: 1280px) {
+  .cn-movies-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 20px;
+  }
+}
+
+.cn-hero {
+  position: relative;
+  width: 100%;
+  height: 390px;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border-subtle);
+}
+@media (min-width: 640px) {
+  .cn-hero {
+    height: 450px;
+  }
+}
+@media (min-width: 768px) {
+  .cn-hero {
+    height: 520px;
+  }
+}
+
+.cn-hero-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  max-width: 620px;
+  padding: 24px 16px;
+  z-index: 2;
+}
+@media (min-width: 768px) {
+  .cn-hero-content {
+    padding: 48px;
+  }
+}
+
+.cn-hero-title {
+  font-family: var(--font-display);
+  font-size: 30px;
+  color: var(--text-primary);
+  line-height: 1.05;
+  margin: 0 0 10px;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.8);
+}
+@media (min-width: 640px) {
+  .cn-hero-title {
+    font-size: 42px;
+    margin: 0 0 14px;
+  }
+}
+@media (min-width: 768px) {
+  .cn-hero-title {
+    font-size: 58px;
+    margin: 0 0 16px;
+  }
+}
+
+.cn-hero-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0 0 20px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+@media (min-width: 768px) {
+  .cn-hero-desc {
+    font-size: 13px;
+    line-height: 1.7;
+    margin: 0 0 28px;
+    -webkit-line-clamp: 3;
+  }
+}
+
+.cn-main-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+@media (min-width: 768px) {
+  .cn-main-content {
+    padding: 40px 24px;
+  }
+}

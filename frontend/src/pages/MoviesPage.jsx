@@ -200,30 +200,30 @@ export default function MoviesPage() {
 
       {/* ── Hero ── */}
       {!isSearching && spotlightMovie && (
-        <div style={{ position: 'relative', width: '100%', height: '520px', overflow: 'hidden', borderBottom: '1px solid var(--border-subtle)' }}>
+        <div className="cn-hero">
           <img
             src={getMovieImageUrl(spotlightMovie, true)}
             alt={spotlightMovie.title}
             onError={e => { const fb = spotlightMovie.backdrop_url || spotlightMovie.poster_url; if (e.target.src !== fb && fb) e.target.src = fb }}
             style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }}
           />
-          {/* Left-heavy gradient — image stays visible on right */}
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(8,10,15,0.97) 0%, rgba(8,10,15,0.75) 40%, rgba(8,10,15,0.25) 70%, transparent 100%)' }} />
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(8,10,15,1) 0%, rgba(8,10,15,0.5) 30%, transparent 60%)' }} />
+          {/* Left-heavy gradient */}
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(8,10,15,0.98) 0%, rgba(8,10,15,0.88) 40%, rgba(8,10,15,0.3) 75%, transparent 100%)' }} />
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(8,10,15,1) 0%, rgba(8,10,15,0.6) 35%, transparent 70%)' }} />
 
           {/* Content */}
-          <div style={{ position: 'absolute', bottom: 0, left: 0, maxWidth: '580px', padding: '48px', zIndex: 2 }}>
+          <div className="cn-hero-content">
             {/* Meta row */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: '10px' }}>
               <Badge variant="red">Spotlight</Badge>
               {spotlightMovie.rating && (
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: 700, color: '#f59e0b', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(6px)', borderRadius: 'var(--radius-sm)', padding: '3px 9px', border: '1px solid rgba(245,158,11,0.25)' }}>
-                  <Star size={11} fill="#f59e0b" color="#f59e0b" /> {parseFloat(spotlightMovie.rating).toFixed(1)}
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '11px', fontWeight: 700, color: '#f59e0b', background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(6px)', borderRadius: 'var(--radius-sm)', padding: '2px 8px', border: '1px solid rgba(245,158,11,0.25)' }}>
+                  <Star size={10} fill="#f59e0b" color="#f59e0b" /> {parseFloat(spotlightMovie.rating).toFixed(1)}
                 </span>
               )}
               {spotlightMovie.duration && (
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)' }}>
-                  <Clock size={12} /> {spotlightMovie.duration} mins
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '11px', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                  <Clock size={11} /> {spotlightMovie.duration} mins
                 </span>
               )}
               {spotlightMovie.language && (
@@ -232,28 +232,21 @@ export default function MoviesPage() {
             </div>
 
             {/* Title */}
-            <h1 style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 'clamp(36px, 5vw, 68px)',
-              color: 'var(--text-primary)',
-              lineHeight: 1,
-              margin: '0 0 16px',
-              textShadow: '0 2px 20px rgba(0,0,0,0.6)',
-            }}>
+            <h1 className="cn-hero-title">
               {spotlightMovie.title}
             </h1>
 
             {/* Description */}
-            <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.7, margin: '0 0 28px', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+            <p className="cn-hero-desc">
               {spotlightMovie.description}
             </p>
 
             {/* CTAs */}
-            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-              <Button variant="primary" size="lg" iconLeft={<Ticket size={15} />} onClick={() => handleBookClick(spotlightMovie)}>
+            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+              <Button variant="primary" size="md" iconLeft={<Ticket size={15} />} onClick={() => handleBookClick(spotlightMovie)}>
                 Book Tickets
               </Button>
-              <Button variant="secondary" size="lg" onClick={() => setSelectedDetailMovie(spotlightMovie)}>
+              <Button variant="secondary" size="md" onClick={() => setSelectedDetailMovie(spotlightMovie)}>
                 Learn More
               </Button>
             </div>
@@ -262,7 +255,7 @@ export default function MoviesPage() {
       )}
 
       {/* ── Main Content ── */}
-      <main style={{ maxWidth: '1280px', margin: '0 auto', padding: '40px 24px' }}>
+      <main className="cn-main-content">
         {isSearching ? (
           <section className="animate-fade-in">
             <div style={S.sectionHead}>
@@ -276,13 +269,13 @@ export default function MoviesPage() {
                 No movies matching "{search}"
               </div>
             ) : (
-              <div style={S.grid}>
+              <div className="cn-movies-grid">
                 {searchResults.map(m => <MovieCard key={m.id} movie={m} onBook={() => handleBookClick(m)} onDetail={() => setSelectedDetailMovie(m)} />)}
               </div>
             )}
           </section>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '56px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '48px' }}>
 
             {/* Now Showing */}
             <section>
@@ -298,7 +291,7 @@ export default function MoviesPage() {
               {nowShowing.length === 0 ? (
                 <EmptyState text={`No movies showing in ${selectedCity?.name || 'your city'}`} />
               ) : (
-                <div style={S.grid}>{nowShowing.map(m => <MovieCard key={m.id} movie={m} onBook={() => handleBookClick(m)} onDetail={() => setSelectedDetailMovie(m)} />)}</div>
+                <div className="cn-movies-grid">{nowShowing.map(m => <MovieCard key={m.id} movie={m} onBook={() => handleBookClick(m)} onDetail={() => setSelectedDetailMovie(m)} />)}</div>
               )}
             </section>
 
@@ -311,7 +304,7 @@ export default function MoviesPage() {
                 </div>
               </div>
               {upcoming.length === 0 ? <EmptyState text="No upcoming releases" /> : (
-                <div style={S.grid}>{upcoming.slice(0, 8).map(m => <MovieCard key={m.id} movie={m} onBook={() => handleBookClick(m)} onDetail={() => setSelectedDetailMovie(m)} />)}</div>
+                <div className="cn-movies-grid">{upcoming.slice(0, 8).map(m => <MovieCard key={m.id} movie={m} onBook={() => handleBookClick(m)} onDetail={() => setSelectedDetailMovie(m)} />)}</div>
               )}
             </section>
 
@@ -324,7 +317,7 @@ export default function MoviesPage() {
                 </div>
               </div>
               {popular.length === 0 ? <EmptyState text="No popular movies" /> : (
-                <div style={S.grid}>{popular.slice(0, 8).map(m => <MovieCard key={m.id} movie={m} onBook={() => handleBookClick(m)} onDetail={() => setSelectedDetailMovie(m)} />)}</div>
+                <div className="cn-movies-grid">{popular.slice(0, 8).map(m => <MovieCard key={m.id} movie={m} onBook={() => handleBookClick(m)} onDetail={() => setSelectedDetailMovie(m)} />)}</div>
               )}
             </section>
 
@@ -337,7 +330,7 @@ export default function MoviesPage() {
                 </div>
               </div>
               {recommended.length === 0 ? <EmptyState text="No recommendations available" /> : (
-                <div style={S.grid}>{recommended.map(m => <MovieCard key={m.id} movie={m} onBook={() => handleBookClick(m)} onDetail={() => setSelectedDetailMovie(m)} />)}</div>
+                <div className="cn-movies-grid">{recommended.map(m => <MovieCard key={m.id} movie={m} onBook={() => handleBookClick(m)} onDetail={() => setSelectedDetailMovie(m)} />)}</div>
               )}
             </section>
           </div>
@@ -347,21 +340,21 @@ export default function MoviesPage() {
       {/* ═══════════════ CITY MODAL ═══════════════ */}
       {showCityModal && (
         <div style={S.modalBackdrop}>
-          <div className="animate-fade-in" style={{ width: '100%', maxWidth: '480px', background: 'var(--bg-modal)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-xl)', padding: '40px', position: 'relative', boxShadow: 'var(--shadow-lg)' }}>
+          <div className="animate-fade-in" style={{ width: '100%', maxWidth: '480px', background: 'var(--bg-modal)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-xl)', padding: '28px 20px', position: 'relative', boxShadow: 'var(--shadow-lg)' }}>
             {selectedCity && (
-              <button onClick={() => setShowCityModal(false)} style={{ position: 'absolute', top: '20px', right: '20px', width: '36px', height: '36px', borderRadius: '50%', background: 'var(--bg-elevated)', border: '1px solid var(--border-default)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-secondary)', transition: 'all var(--transition-base)' }}
+              <button onClick={() => setShowCityModal(false)} style={{ position: 'absolute', top: '16px', right: '16px', width: '34px', height: '34px', borderRadius: '50%', background: 'var(--bg-elevated)', border: '1px solid var(--border-default)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-secondary)', transition: 'all var(--transition-base)' }}
                 onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-hover)'; e.currentTarget.querySelector('svg').style.color = 'var(--brand-red)' }}
                 onMouseLeave={e => { e.currentTarget.style.background = 'var(--bg-elevated)'; e.currentTarget.querySelector('svg').style.color = '' }}
               ><X size={16} /></button>
             )}
-            <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+            <div style={{ textAlign: 'center', marginBottom: '24px' }}>
               <Badge variant="red" icon={<MapPin size={11} />}>Location Selection</Badge>
-              <h3 style={{ fontFamily: 'var(--font-body)', fontWeight: 900, fontSize: '26px', color: 'var(--text-primary)', margin: '16px 0 8px' }}>Select Your City</h3>
+              <h3 style={{ fontFamily: 'var(--font-body)', fontWeight: 900, fontSize: '24px', color: 'var(--text-primary)', margin: '14px 0 6px' }}>Select Your City</h3>
               <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Browse theatres and showtimes for your city</p>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '12px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '10px' }}>
               {cities.map(c => (
-                <div key={c.id} onClick={() => handleCitySelect(c)} style={{ padding: '20px 12px', borderRadius: 'var(--radius-lg)', border: `1px solid ${selectedCity?.id === c.id ? 'var(--border-active)' : 'var(--border-subtle)'}`, background: selectedCity?.id === c.id ? 'rgba(232,54,74,0.08)' : 'var(--bg-elevated)', cursor: 'pointer', textAlign: 'center', transition: 'all var(--transition-base)', color: selectedCity?.id === c.id ? 'var(--brand-red)' : 'var(--text-secondary)', fontWeight: 700, fontSize: '13px' }}
+                <div key={c.id} onClick={() => handleCitySelect(c)} style={{ padding: '16px 8px', borderRadius: 'var(--radius-lg)', border: `1px solid ${selectedCity?.id === c.id ? 'var(--border-active)' : 'var(--border-subtle)'}`, background: selectedCity?.id === c.id ? 'rgba(232,54,74,0.08)' : 'var(--bg-elevated)', cursor: 'pointer', textAlign: 'center', transition: 'all var(--transition-base)', color: selectedCity?.id === c.id ? 'var(--brand-red)' : 'var(--text-secondary)', fontWeight: 700, fontSize: '12px' }}
                   onMouseEnter={e => { if (selectedCity?.id !== c.id) { e.currentTarget.style.borderColor = 'var(--border-default)'; e.currentTarget.style.color = 'var(--text-primary)' }}}
                   onMouseLeave={e => { if (selectedCity?.id !== c.id) { e.currentTarget.style.borderColor = 'var(--border-subtle)'; e.currentTarget.style.color = 'var(--text-secondary)' }}}
                 >
@@ -376,51 +369,51 @@ export default function MoviesPage() {
       {/* ═══════════════ DETAIL MODAL ═══════════════ */}
       {selectedDetailMovie && (
         <div style={{ ...S.modalBackdrop, alignItems: 'flex-start', overflowY: 'auto' }}>
-          <div className="animate-fade-in" style={{ width: '100%', maxWidth: '860px', background: 'var(--bg-modal)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-xl)', overflow: 'hidden', boxShadow: 'var(--shadow-lg)', margin: '24px auto', position: 'relative' }}>
-            <button onClick={() => setSelectedDetailMovie(null)} style={{ position: 'absolute', top: '16px', right: '16px', zIndex: 10, width: '38px', height: '38px', borderRadius: '50%', background: 'rgba(0,0,0,0.6)', border: '1px solid var(--border-default)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-secondary)' }}>
+          <div className="animate-fade-in" style={{ width: '100%', maxWidth: '860px', background: 'var(--bg-modal)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-xl)', overflow: 'hidden', boxShadow: 'var(--shadow-lg)', margin: '16px auto', position: 'relative' }}>
+            <button onClick={() => setSelectedDetailMovie(null)} style={{ position: 'absolute', top: '16px', right: '16px', zIndex: 10, width: '36px', height: '36px', borderRadius: '50%', background: 'rgba(0,0,0,0.6)', border: '1px solid var(--border-default)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-secondary)' }}>
               <X size={17} />
             </button>
             {/* Hero image */}
-            <div style={{ height: '260px', position: 'relative', overflow: 'hidden' }}>
+            <div style={{ height: '220px', position: 'relative', overflow: 'hidden' }}>
               <img src={getMovieImageUrl(selectedDetailMovie, true)} alt={selectedDetailMovie.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, var(--bg-modal) 0%, transparent 60%)' }} />
             </div>
-            <div style={{ display: 'flex', gap: '32px', padding: '24px 32px 32px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '20px', padding: '16px 20px 24px', flexWrap: 'wrap' }}>
               {/* Poster */}
-              <div style={{ width: '140px', marginTop: '-100px', flexShrink: 0 }}>
+              <div style={{ width: '110px', marginTop: '-60px', flexShrink: 0 }}>
                 <img src={getMovieImageUrl(selectedDetailMovie, false)} alt={selectedDetailMovie.title} style={{ width: '100%', aspectRatio: '2/3', objectFit: 'cover', borderRadius: 'var(--radius-lg)', border: '2px solid var(--border-default)', boxShadow: 'var(--shadow-lg)' }} />
               </div>
               {/* Info */}
-              <div style={{ flex: 1, minWidth: '240px' }}>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '12px', alignItems: 'center' }}>
+              <div style={{ flex: 1, minWidth: '220px' }}>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '10px', alignItems: 'center' }}>
                   <Badge variant={selectedDetailMovie.status === 'COMING_SOON' ? 'purple' : 'red'}>
                     {selectedDetailMovie.status === 'COMING_SOON' ? 'Upcoming' : 'Now Showing'}
                   </Badge>
                   {selectedDetailMovie.rating && <Badge variant="gold" icon={<Star size={9} fill="#f59e0b" />}>{parseFloat(selectedDetailMovie.rating).toFixed(1)}</Badge>}
                   {selectedDetailMovie.language && <Badge variant="blue">{selectedDetailMovie.language}</Badge>}
                 </div>
-                <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '36px', color: 'var(--text-primary)', margin: '0 0 8px', letterSpacing: '0.02em', lineHeight: 1 }}>{selectedDetailMovie.title}</h2>
-                <div style={{ display: 'flex', gap: '16px', fontSize: '11px', color: 'var(--text-tertiary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
+                <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '28px', color: 'var(--text-primary)', margin: '0 0 8px', letterSpacing: '0.02em', lineHeight: 1 }}>{selectedDetailMovie.title}</h2>
+                <div style={{ display: 'flex', gap: '12px', fontSize: '11px', color: 'var(--text-tertiary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '14px', alignItems: 'center', flexWrap: 'wrap' }}>
                   <span>Genre: <span style={{ color: 'var(--text-secondary)' }}>{selectedDetailMovie.genre || 'Cinema'}</span></span>
                   {selectedDetailMovie.duration && <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Clock size={11} /> {selectedDetailMovie.duration} Mins</span>}
                   <span>Released: <span style={{ color: 'var(--text-secondary)' }}>{selectedDetailMovie.release_date || 'N/A'}</span></span>
                 </div>
-                <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.7, margin: '0 0 20px' }}>{selectedDetailMovie.description}</p>
+                <p style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.6, margin: '0 0 16px' }}>{selectedDetailMovie.description}</p>
                 {selectedDetailMovie.cast_members && (
-                  <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '16px', marginBottom: '20px' }}>
-                    <span style={{ fontSize: '10px', color: 'var(--text-tertiary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: '6px' }}>Starring</span>
-                    <p style={{ fontSize: '13px', color: 'var(--text-secondary)', fontWeight: 600 }}>{selectedDetailMovie.cast_members}</p>
+                  <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '12px', marginBottom: '16px' }}>
+                    <span style={{ fontSize: '10px', color: 'var(--text-tertiary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: '4px' }}>Starring</span>
+                    <p style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 600 }}>{selectedDetailMovie.cast_members}</p>
                   </div>
                 )}
-                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                   {selectedDetailMovie.status === 'COMING_SOON' ? (
-                    <Button variant="primary" onClick={() => alert(`We'll notify you on release of ${selectedDetailMovie.title}!`)}>Notify Me</Button>
+                    <Button variant="primary" size="sm" onClick={() => alert(`We'll notify you on release of ${selectedDetailMovie.title}!`)}>Notify Me</Button>
                   ) : (
-                    <Button variant="primary" iconLeft={<Ticket size={14} />} onClick={() => { setSelectedDetailMovie(null); handleBookClick(selectedDetailMovie) }}>Book Tickets</Button>
+                    <Button variant="primary" size="sm" iconLeft={<Ticket size={14} />} onClick={() => { setSelectedDetailMovie(null); handleBookClick(selectedDetailMovie) }}>Book Tickets</Button>
                   )}
                   {selectedDetailMovie.trailer_url && (
                     <a href={selectedDetailMovie.trailer_url} target="_blank" rel="noopener noreferrer">
-                      <Button variant="secondary">Watch Trailer <ChevronRight size={13} /></Button>
+                      <Button variant="secondary" size="sm">Watch Trailer <ChevronRight size={13} /></Button>
                     </a>
                   )}
                 </div>
@@ -433,7 +426,7 @@ export default function MoviesPage() {
       {/* ═══════════════ BOOKING MODAL ═══════════════ */}
       {showBookingModal && selectedMovie && (
         <div style={{ ...S.modalBackdrop, alignItems: 'flex-start', overflowY: 'auto' }}>
-          <div className="animate-fade-in" style={{ width: '100%', maxWidth: '700px', background: 'var(--bg-modal)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-xl)', padding: '32px', position: 'relative', boxShadow: 'var(--shadow-lg)', margin: '24px auto', maxHeight: '90vh', overflowY: 'auto' }}>
+          <div className="animate-fade-in" style={{ width: '100%', maxWidth: '700px', background: 'var(--bg-modal)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-xl)', padding: '22px 18px', position: 'relative', boxShadow: 'var(--shadow-lg)', margin: '16px auto', maxHeight: '92vh', overflowY: 'auto' }}>
 
             {/* Close */}
             <button onClick={() => setShowBookingModal(false)} style={{ position: 'absolute', top: '20px', right: '20px', width: '36px', height: '36px', borderRadius: '50%', background: 'var(--bg-elevated)', border: '1px solid var(--border-default)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-secondary)', transition: 'all var(--transition-base)' }}
