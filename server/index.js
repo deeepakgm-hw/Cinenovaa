@@ -1523,11 +1523,18 @@ app.post('/api/group-sessions', async (req, res) => {
             [id, parseInt(showtimeId), parseInt(organiserUserId), sessionCode, JSON.stringify([]), JSON.stringify({}), 'active', expiresAt]
         );
 
+        let clientOrigin = req.headers.origin;
+        if (!clientOrigin && req.headers.referer) {
+            try { clientOrigin = new URL(req.headers.referer).origin; } catch (e) {}
+        }
+        if (!clientOrigin) clientOrigin = 'http://localhost:5173';
+
         res.json({
             success: true,
             id,
             sessionCode,
-            joinUrl: `http://localhost:5173/seats?showtimeId=${showtimeId}&session=${sessionCode}`
+            showtimeId: parseInt(showtimeId),
+            joinUrl: `${clientOrigin}/seats?showtimeId=${showtimeId}&session=${sessionCode}`
         });
     } catch (err) {
         console.error('[GROUP ROUTE ERROR] Failed to create group session:', err.message);
