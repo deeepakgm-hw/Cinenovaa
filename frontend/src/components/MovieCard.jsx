@@ -66,21 +66,21 @@ export default function MovieCard({ movie, onBook, onDetail }) {
         {movie.rating && (
           <div style={{
             position: 'absolute',
-            top: '10px',
-            right: '10px',
+            top: '8px',
+            right: '8px',
             display: 'flex',
             alignItems: 'center',
-            gap: '4px',
-            background: 'rgba(0,0,0,0.75)',
+            gap: '3px',
+            background: 'rgba(0,0,0,0.8)',
             backdropFilter: 'blur(8px)',
-            border: '1px solid rgba(255,255,255,0.1)',
+            border: '1px solid rgba(255,255,255,0.12)',
             borderRadius: 'var(--radius-pill)',
-            padding: '3px 9px',
+            padding: '2px 7px',
             fontSize: '10px',
             fontWeight: 800,
             color: '#f59e0b',
           }}>
-            <Star size={10} fill="#f59e0b" color="#f59e0b" />
+            <Star size={9} fill="#f59e0b" color="#f59e0b" />
             {isNaN(parseFloat(movie.rating)) ? movie.rating : parseFloat(movie.rating).toFixed(1)}
           </div>
         )}
@@ -89,8 +89,8 @@ export default function MovieCard({ movie, onBook, onDetail }) {
         {movie.language && (
           <div style={{
             position: 'absolute',
-            bottom: '10px',
-            left: '10px',
+            bottom: '8px',
+            left: '8px',
           }}>
             <Badge variant="red">{movie.language}</Badge>
           </div>
@@ -98,42 +98,56 @@ export default function MovieCard({ movie, onBook, onDetail }) {
       </div>
 
       {/* Info */}
-      <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
-        <h3 style={{
-          fontSize: '14px',
-          fontWeight: 700,
-          color: 'var(--text-primary)',
-          lineHeight: 1.3,
-          margin: 0,
-          transition: 'color var(--transition-base)',
-        }}>
+      <div style={{ padding: '10px 10px 12px', display: 'flex', flexDirection: 'column', gap: '4px', flex: 1 }}>
+        <h3
+          title={movie.title}
+          style={{
+            fontSize: '13px',
+            fontWeight: 700,
+            color: 'var(--text-primary)',
+            lineHeight: 1.25,
+            margin: 0,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            transition: 'color var(--transition-base)',
+          }}
+        >
           {movie.title}
         </h3>
 
         <p style={{
-          fontSize: '11px',
+          fontSize: '10px',
           color: 'var(--text-secondary)',
           fontWeight: 600,
           textTransform: 'uppercase',
-          letterSpacing: '0.06em',
+          letterSpacing: '0.04em',
           display: 'flex',
           alignItems: 'center',
-          gap: '6px',
-          margin: 0,
+          gap: '4px',
+          margin: '0 0 6px',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
         }}>
-          {movie.genre || 'Cinema'}
-          <span style={{ color: 'var(--border-default)' }}>•</span>
-          <Clock size={10} style={{ flexShrink: 0 }} />
-          {movie.duration || 120}m
+          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {(movie.genre || 'Cinema').split(',')[0].trim()}
+          </span>
+          <span style={{ color: 'var(--border-default)', flexShrink: 0 }}>•</span>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '2px', flexShrink: 0 }}>
+            <Clock size={9} />
+            {movie.duration || 120}m
+          </span>
         </p>
 
-        <div style={{ marginTop: 'auto', paddingTop: '8px' }}>
+        <div style={{ marginTop: 'auto' }}>
           {isUpcoming ? (
             <Button
               variant="secondary"
               size="sm"
               fullWidth
               onClick={e => { e.stopPropagation(); onDetail() }}
+              style={{ padding: '7px 0', fontSize: '11px' }}
             >
               View Details
             </Button>
@@ -143,6 +157,7 @@ export default function MovieCard({ movie, onBook, onDetail }) {
               size="sm"
               fullWidth
               onClick={e => { e.stopPropagation(); onBook() }}
+              style={{ padding: '7px 0', fontSize: '11px' }}
             >
               Book Tickets
             </Button>

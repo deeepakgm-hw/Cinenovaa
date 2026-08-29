@@ -227,20 +227,20 @@ export default function TicketPage() {
 
       <NavBar />
 
-      <main className="max-w-4xl mx-auto px-6 py-12 flex flex-col items-center relative z-10">
+      <main className="max-w-4xl mx-auto px-3 sm:px-6 py-6 sm:py-12 flex flex-col items-center relative z-10">
         {/* Success badge */}
-        <div className="flex flex-col items-center mb-10 text-center animate-fade-in">
-          <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/35 flex items-center justify-center text-emerald-400 mb-4">
-            <CheckCircle size={32} />
+        <div className="flex flex-col items-center mb-8 sm:mb-10 text-center animate-fade-in">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-emerald-500/10 border border-emerald-500/35 flex items-center justify-center text-emerald-400 mb-3 sm:mb-4">
+            <CheckCircle size={28} className="sm:w-8 sm:h-8" />
           </div>
-          <h2 className="text-3xl font-black text-white tracking-tight">Booking Confirmed!</h2>
-          <p className="text-slate-400 text-xs mt-1.5 font-bold uppercase tracking-widest text-yellow-500">
+          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">Booking Confirmed!</h2>
+          <p className="text-slate-400 text-[11px] sm:text-xs mt-1 font-bold uppercase tracking-widest text-yellow-500">
             Show code at entry door • Digital ticket saved
           </p>
         </div>
 
         {/* E-Ticket Luxury Wallet Card Layout */}
-        <div id="ticket-card" className="w-full max-w-3xl bg-[#11131c]/80 border border-slate-800/80 rounded-[36px] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.6)] hover:shadow-[0_25px_60px_rgba(244,63,94,0.15)] transition-all duration-500 backdrop-blur-3xl grid grid-cols-1 md:grid-cols-12 relative animate-fade-in border-t border-rose-500/30">
+        <div id="ticket-card" className="w-full max-w-3xl bg-[#11131c]/80 border border-slate-800/80 rounded-2xl sm:rounded-[36px] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.6)] hover:shadow-[0_25px_60px_rgba(244,63,94,0.15)] transition-all duration-500 backdrop-blur-3xl grid grid-cols-1 md:grid-cols-12 relative animate-fade-in border-t border-rose-500/30">
           
           {/* Neon Glow Highlights */}
           <div className="absolute top-0 left-0 w-32 h-32 bg-rose-500/15 blur-[45px] pointer-events-none"></div>
@@ -254,10 +254,10 @@ export default function TicketPage() {
           <div className="hidden md:block absolute top-8 bottom-8 left-[41.666%] border-l-2 border-dashed border-slate-850/50 -translate-x-1/2 pointer-events-none z-10"></div>
 
           {/* Left Stub Column: Movie Poster & Details (5 cols) */}
-          <div className="md:col-span-5 bg-gradient-to-b from-[#181d2f] to-[#0c0e18] p-8 border-b md:border-b-0 md:border-r border-slate-850/50 flex flex-col justify-between relative">
+          <div className="md:col-span-5 bg-gradient-to-b from-[#181d2f] to-[#0c0e18] p-4 sm:p-8 border-b md:border-b-0 md:border-r border-slate-850/50 flex flex-col justify-between relative">
             <div>
               {movie && (
-                <div className="w-full aspect-[2/3] rounded-2xl overflow-hidden border border-slate-800/80 shadow-xl relative mb-6">
+                <div className="w-full h-44 sm:h-auto sm:aspect-[2/3] rounded-xl sm:rounded-2xl overflow-hidden border border-slate-800/80 shadow-xl relative mb-4 sm:mb-6">
                   <img 
                     src={getMovieImageUrl(movie)} 
                     alt={movie.title} 
@@ -267,23 +267,23 @@ export default function TicketPage() {
                     }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
-                  <span className="absolute bottom-4 left-4 text-[9px] font-black uppercase tracking-widest bg-gradient-to-r from-rose-500 to-amber-500 text-white px-3 py-1 rounded-full border border-rose-500/30 shadow-md">
+                  <span className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 text-[9px] font-black uppercase tracking-widest bg-gradient-to-r from-rose-500 to-amber-500 text-white px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full border border-rose-500/30 shadow-md">
                     {showtime?.screenType || 'IMAX'}
                   </span>
                 </div>
               )}
-              <h3 className="text-2xl font-black text-white leading-tight mt-1 bg-gradient-to-r from-white to-slate-200 bg-clip-text text-transparent">{booking.movieName}</h3>
-              <p className="text-rose-450 text-xs mt-1.5 font-bold uppercase tracking-wider">{movie?.genre || 'Cinema'}</p>
+              <h3 className="text-xl sm:text-2xl font-black text-white leading-tight mt-1 bg-gradient-to-r from-white to-slate-200 bg-clip-text text-transparent">{booking.movieName}</h3>
+              <p className="text-rose-450 text-[11px] sm:text-xs mt-1 font-bold uppercase tracking-wider">{movie?.genre || 'Cinema'}</p>
             </div>
             
-            <div className="mt-8 pt-6 border-t border-slate-800/40 text-xs">
+            <div className="mt-4 sm:mt-8 pt-4 sm:pt-6 border-t border-slate-800/40 text-xs">
               <span className="text-[9px] text-slate-500 font-extrabold uppercase tracking-widest block">Screening Room</span>
-              <span className="font-extrabold text-white mt-1 block text-sm">{showtime?.screenName || 'Screen 1'}</span>
+              <span className="font-extrabold text-white mt-0.5 block text-xs sm:text-sm">{showtime?.screenName || 'Screen 1'}</span>
             </div>
           </div>
 
           {/* Right Ticket Body: Details & QR code (7 cols) */}
-          <div className="md:col-span-7 p-8 flex flex-col justify-between bg-gradient-to-b from-[#131622] to-[#0e1017]">
+          <div className="md:col-span-7 p-4 sm:p-8 flex flex-col justify-between bg-gradient-to-b from-[#131622] to-[#0e1017]">
             <div className="space-y-6">
               
               {/* Stub header */}

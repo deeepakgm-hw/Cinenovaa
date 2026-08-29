@@ -544,23 +544,22 @@ export default function MoviesPage() {
                     return (
                       <div key={th.id} style={{ borderRadius: 'var(--radius-lg)', border: `1px solid ${isExp ? 'var(--border-active)' : 'var(--border-subtle)'}`, background: isExp ? 'rgba(232,54,74,0.04)' : 'var(--bg-surface)', overflow: 'hidden', transition: 'all var(--transition-base)' }}>
                         {/* Header */}
-                        <div onClick={() => setExpandedTheatreId(isExp ? null : th.id)} style={{ display: 'flex', gap: '16px', alignItems: 'flex-start', padding: '16px', cursor: 'pointer' }}>
-                          <div style={{ width: '60px', height: '60px', borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid var(--border-subtle)', flexShrink: 0 }}>
+                        <div onClick={() => setExpandedTheatreId(isExp ? null : th.id)} style={{ display: 'flex', gap: '12px', alignItems: 'center', padding: '12px 14px', cursor: 'pointer' }}>
+                          <div style={{ width: '46px', height: '46px', borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid var(--border-subtle)', flexShrink: 0 }}>
                             <img src={imgUrl} alt={th.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                           </div>
                           <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '6px', alignItems: 'center' }}>
+                            <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap', marginBottom: '3px', alignItems: 'center' }}>
                               <Badge variant="purple">{th.theatre_type || 'Multiplex'}</Badge>
-                              <Badge variant="green" icon={<BadgeCheck size={10} />}>Verified</Badge>
-                              {th.rating && <Badge variant="gold" icon={<Star size={9} fill="#f59e0b" />}>{parseFloat(th.rating).toFixed(1)}</Badge>}
-                              {th.distance != null && <span style={{ fontSize: '11px', color: 'var(--text-tertiary)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '3px' }}><MapPin size={11} /> {th.distance} km</span>}
+                              {th.rating && <Badge variant="gold" icon={<Star size={8} fill="#f59e0b" />}>{parseFloat(th.rating).toFixed(1)}</Badge>}
+                              {th.distance != null && <span style={{ fontSize: '10px', color: 'var(--text-tertiary)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '2px' }}><MapPin size={10} /> {th.distance} km</span>}
                             </div>
-                            <h4 style={{ fontSize: '15px', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 3px' }}>{th.name}</h4>
-                            <p style={{ fontSize: '11px', color: 'var(--text-tertiary)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{th.location}</p>
+                            <h4 style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{th.name}</h4>
+                            <p style={{ fontSize: '10px', color: 'var(--text-tertiary)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{th.location}</p>
                           </div>
                           <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                            <p style={{ fontSize: '10px', color: 'var(--text-tertiary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', margin: '0 0 3px' }}>Starts From</p>
-                            <p style={{ fontSize: '16px', fontWeight: 800, color: 'var(--brand-red)', margin: 0 }}>₹{parseFloat(minPrice).toFixed(0)}</p>
+                            <p style={{ fontSize: '9px', color: 'var(--text-tertiary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em', margin: '0 0 2px' }}>Starts From</p>
+                            <p style={{ fontSize: '14px', fontWeight: 800, color: 'var(--brand-red)', margin: 0 }}>₹{parseFloat(minPrice).toFixed(0)}</p>
                           </div>
                         </div>
 

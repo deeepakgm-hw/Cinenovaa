@@ -518,17 +518,17 @@ export default function PaymentPage() {
     <div className="min-h-screen text-slate-100 bg-[#07070a]">
       <NavBar />
 
-      <main className="max-w-6xl mx-auto px-6 py-8">
-        <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-900/60 pb-5">
+      <main className="max-w-6xl mx-auto px-3 sm:px-6 py-4 sm:py-8">
+        <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-900/60 pb-4">
           <div>
             <span className="text-[10px] font-bold text-rose-500 uppercase tracking-widest bg-rose-500/10 border border-rose-500/20 px-2.5 py-1 rounded-full">
               Checkout Panel
             </span>
-            <h2 className="text-3xl font-black text-white mt-3.5 leading-none">Confirm Billing Order</h2>
+            <h2 className="text-2xl sm:text-3xl font-black text-white mt-2 sm:mt-3.5 leading-none">Confirm Billing Order</h2>
           </div>
           <button
             onClick={() => navigate(-1)}
-            className="text-[10px] uppercase tracking-wider px-5 py-2.5 bg-slate-900 border border-slate-850 hover:bg-slate-800 rounded-full font-bold transition-all w-max"
+            className="text-[10px] uppercase tracking-wider px-4 py-2 bg-slate-900 border border-slate-850 hover:bg-slate-800 rounded-full font-bold transition-all w-max"
           >
             ← Back to Seats
           </button>
@@ -541,44 +541,44 @@ export default function PaymentPage() {
         )}
 
         {timeLeft > 0 && (
-          <div className="mb-6 p-4 rounded-2xl bg-amber-950/20 border border-amber-500/30 text-amber-350 text-xs font-bold flex justify-between items-center tracking-wider uppercase">
-            <span>⏰ Complete your transaction before the seat hold expires.</span>
-            <span className="text-sm font-black bg-amber-500/25 px-3.5 py-1 rounded-lg text-yellow-400">
+          <div className="mb-6 p-3 sm:p-4 rounded-2xl bg-amber-950/20 border border-amber-500/30 text-amber-350 text-xs font-bold flex justify-between items-center tracking-wider uppercase">
+            <span className="text-[11px] sm:text-xs">⏰ Complete before hold expires</span>
+            <span className="text-xs sm:text-sm font-black bg-amber-500/25 px-2.5 sm:px-3.5 py-1 rounded-lg text-yellow-400">
               {formatTime(timeLeft)}
             </span>
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
           {/* Main Checkout options */}
           <div className="lg:col-span-2 space-y-6">
             {/* 1. Snack Selector */}
-            <div className="rounded-3xl bg-slate-900/20 border border-slate-900 p-8">
-              <h3 className="text-xl font-bold text-white mb-1.5">Concessions Combo Addons</h3>
+            <div className="rounded-2xl sm:rounded-3xl bg-slate-900/20 border border-slate-900 p-4 sm:p-6 md:p-8">
+              <h3 className="text-lg sm:text-xl font-bold text-white mb-1">Concessions Combo Addons</h3>
               <p className="text-xs text-slate-500 font-medium">Pre-order gourmet movie snacks and beverages for screen pickup</p>
               
-              <div className="space-y-4 mt-6">
+              <div className="space-y-3 mt-4 sm:mt-6">
                 {snackCatalog.map(snack => {
                   const qty = selectedSnacks[snack.id] || 0
                   return (
-                    <div key={snack.id} className="flex justify-between items-center p-4 rounded-2xl bg-black/20 border border-slate-900 hover:border-slate-800/80 transition-all animate-fade-in">
-                      <div>
-                        <h4 className="font-bold text-white text-sm">{snack.name}</h4>
-                        <p className="text-slate-500 text-xs mt-1 font-medium">{snack.desc}</p>
-                        <p className="text-xs text-rose-450 font-extrabold mt-2">INR {snack.price.toFixed(2)}</p>
+                    <div key={snack.id} className="flex justify-between items-center p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-black/20 border border-slate-900 hover:border-slate-800/80 transition-all animate-fade-in">
+                      <div className="pr-2">
+                        <h4 className="font-bold text-white text-xs sm:text-sm">{snack.name}</h4>
+                        <p className="text-slate-500 text-[11px] sm:text-xs mt-0.5 font-medium">{snack.desc}</p>
+                        <p className="text-xs text-rose-450 font-extrabold mt-1">₹{snack.price.toFixed(2)}</p>
                       </div>
-                      <div className="flex items-center gap-3.5">
+                      <div className="flex items-center gap-2 sm:gap-3.5 flex-shrink-0">
                         <button
                           onClick={() => handleSnackQtyChange(snack.id, -1)}
                           disabled={qty === 0}
-                          className="w-8 h-8 rounded-full bg-slate-900 hover:bg-slate-850 border border-slate-800 text-white font-black flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                          className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-slate-900 hover:bg-slate-850 border border-slate-800 text-white font-black flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed transition-all text-sm"
                         >
                           -
                         </button>
-                        <span className="w-6 text-center text-sm font-bold text-white">{qty}</span>
+                        <span className="w-5 text-center text-xs sm:text-sm font-bold text-white">{qty}</span>
                         <button
                           onClick={() => handleSnackQtyChange(snack.id, 1)}
-                          className="w-8 h-8 rounded-full bg-slate-900 hover:bg-slate-850 border border-slate-800 text-white font-black flex items-center justify-center transition-all"
+                          className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-slate-900 hover:bg-slate-850 border border-slate-800 text-white font-black flex items-center justify-center transition-all text-sm"
                         >
                           +
                         </button>
@@ -590,54 +590,54 @@ export default function PaymentPage() {
             </div>
 
             {/* 2. Payment Method selection */}
-            <div className="rounded-3xl bg-slate-900/20 border border-slate-900 p-8">
-              <h3 className="text-xl font-bold text-white mb-1.5">Secure Payment Options</h3>
+            <div className="rounded-2xl sm:rounded-3xl bg-slate-900/20 border border-slate-900 p-4 sm:p-6 md:p-8">
+              <h3 className="text-lg sm:text-xl font-bold text-white mb-1">Secure Payment Options</h3>
               <p className="text-xs text-slate-500 font-medium">Complete booking securely using standard gateways</p>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mt-4 sm:mt-6">
                 {/* Wallet Method */}
                 <div
                   onClick={() => setPaymentMethod('WALLET')}
-                  className={`p-5 rounded-2xl border cursor-pointer transition-all flex flex-col justify-between min-h-[120px] ${paymentMethod === 'WALLET' ? 'border-rose-500 bg-rose-500/5' : 'border-slate-900 bg-black/20 hover:border-slate-800'}`}
+                  className={`p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border cursor-pointer transition-all flex flex-col justify-between min-h-[90px] sm:min-h-[120px] ${paymentMethod === 'WALLET' ? 'border-rose-500 bg-rose-500/5' : 'border-slate-900 bg-black/20 hover:border-slate-800'}`}
                 >
                   <div>
-                    <h4 className="font-bold text-white text-sm">CineNova Wallet</h4>
-                    <p className="text-[10px] text-slate-500 font-medium mt-1">Instant account billing</p>
+                    <h4 className="font-bold text-white text-xs sm:text-sm">CineNova Wallet</h4>
+                    <p className="text-[10px] text-slate-500 font-medium mt-0.5">Instant account billing</p>
                   </div>
-                  <div className="text-[10px] font-extrabold text-yellow-500 tracking-wider">
-                    BAL: INR {walletBalance.toFixed(2)}
+                  <div className="text-[10px] font-extrabold text-yellow-500 tracking-wider mt-2">
+                    BAL: ₹{walletBalance.toFixed(2)}
                   </div>
                 </div>
 
                 {/* UPI Method */}
                 <div
                   onClick={() => setPaymentMethod('UPI')}
-                  className={`p-5 rounded-2xl border cursor-pointer transition-all flex flex-col justify-between min-h-[120px] ${paymentMethod === 'UPI' ? 'border-rose-500 bg-rose-500/5' : 'border-slate-900 bg-black/20 hover:border-slate-800'}`}
+                  className={`p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border cursor-pointer transition-all flex flex-col justify-between min-h-[90px] sm:min-h-[120px] ${paymentMethod === 'UPI' ? 'border-rose-500 bg-rose-500/5' : 'border-slate-900 bg-black/20 hover:border-slate-800'}`}
                 >
                   <div>
-                    <h4 className="font-bold text-white text-sm">UPI Portal (Gateway)</h4>
-                    <p className="text-[10px] text-slate-500 font-medium mt-1">GPay, PhonePe, Paytm</p>
+                    <h4 className="font-bold text-white text-xs sm:text-sm">UPI Portal (Gateway)</h4>
+                    <p className="text-[10px] text-slate-500 font-medium mt-0.5">GPay, PhonePe, Paytm</p>
                   </div>
-                  <span className="text-[9px] font-black text-rose-500 uppercase tracking-widest">Instant scan / VPA</span>
+                  <span className="text-[9px] font-black text-rose-500 uppercase tracking-widest mt-2">Instant scan / VPA</span>
                 </div>
 
                 {/* Card Method */}
                 <div
                   onClick={() => setPaymentMethod('CARD')}
-                  className={`p-5 rounded-2xl border cursor-pointer transition-all flex flex-col justify-between min-h-[120px] ${paymentMethod === 'CARD' ? 'border-rose-500 bg-rose-500/5' : 'border-slate-900 bg-black/20 hover:border-slate-800'}`}
+                  className={`p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border cursor-pointer transition-all flex flex-col justify-between min-h-[90px] sm:min-h-[120px] ${paymentMethod === 'CARD' ? 'border-rose-500 bg-rose-500/5' : 'border-slate-900 bg-black/20 hover:border-slate-800'}`}
                 >
                   <div>
-                    <h4 className="font-bold text-white text-sm">Credit / Debit Card</h4>
-                    <p className="text-[10px] text-slate-500 font-medium mt-1">Visa, Mastercard, RuPay</p>
+                    <h4 className="font-bold text-white text-xs sm:text-sm">Credit / Debit Card</h4>
+                    <p className="text-[10px] text-slate-500 font-medium mt-0.5">Visa, Mastercard, RuPay</p>
                   </div>
-                  <span className="text-[9px] font-black text-purple-500 uppercase tracking-widest">Secure 3DS Gateway</span>
+                  <span className="text-[9px] font-black text-purple-500 uppercase tracking-widest mt-2">Secure 3DS Gateway</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Checkout sidebar panel */}
-          <div className="rounded-3xl bg-slate-900/20 border border-slate-900 p-8 flex flex-col justify-between h-fit">
+          <div className="rounded-2xl sm:rounded-3xl bg-slate-900/20 border border-slate-900 p-4 sm:p-6 md:p-8 flex flex-col justify-between h-fit">
             <div>
               <h3 className="text-lg font-bold text-white mb-6 border-b border-slate-900/40 pb-3 uppercase tracking-wider">Order Invoice</h3>
               

@@ -139,13 +139,13 @@ body {
 .cn-hero {
   position: relative;
   width: 100%;
-  height: 390px;
+  height: 280px;
   overflow: hidden;
   border-bottom: 1px solid var(--border-subtle);
 }
 @media (min-width: 640px) {
   .cn-hero {
-    height: 450px;
+    height: 400px;
   }
 }
 @media (min-width: 768px) {
@@ -159,7 +159,7 @@ body {
   bottom: 0;
   left: 0;
   max-width: 620px;
-  padding: 24px 16px;
+  padding: 16px 14px;
   z-index: 2;
 }
 @media (min-width: 768px) {
@@ -170,15 +170,15 @@ body {
 
 .cn-hero-title {
   font-family: var(--font-display);
-  font-size: 30px;
+  font-size: 24px;
   color: var(--text-primary);
-  line-height: 1.05;
-  margin: 0 0 10px;
+  line-height: 1.1;
+  margin: 0 0 8px;
   text-shadow: 0 2px 20px rgba(0,0,0,0.8);
 }
 @media (min-width: 640px) {
   .cn-hero-title {
-    font-size: 42px;
+    font-size: 38px;
     margin: 0 0 14px;
   }
 }
@@ -190,10 +190,10 @@ body {
 }
 
 .cn-hero-desc {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-secondary);
-  line-height: 1.5;
-  margin: 0 0 20px;
+  line-height: 1.4;
+  margin: 0 0 14px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -211,7 +211,12 @@ body {
 .cn-main-content {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 24px 16px;
+  padding: 16px 12px;
+}
+@media (min-width: 640px) {
+  .cn-main-content {
+    padding: 24px 16px;
+  }
 }
 @media (min-width: 768px) {
   .cn-main-content {

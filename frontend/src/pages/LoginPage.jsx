@@ -236,7 +236,7 @@ export default function LoginPage() {
           border: '1px solid var(--border-subtle)',
           borderRadius: 'var(--radius-xl)',
           boxShadow: 'var(--shadow-lg)',
-          padding: '40px 36px',
+          padding: '32px 20px',
           position: 'relative',
           zIndex: 1,
         }}
@@ -372,7 +372,7 @@ export default function LoginPage() {
             )}
 
             {/* 6-box OTP */}
-            <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', gap: '6px', justifyContent: 'center', width: '100%' }}>
               {otp.map((digit, idx) => (
                 <input
                   key={idx}
@@ -385,10 +385,11 @@ export default function LoginPage() {
                   onKeyDown={e => handleOtpKeyDown(idx, e)}
                   onPaste={idx === 0 ? handleOtpPaste : undefined}
                   style={{
-                    width: '48px',
-                    height: '58px',
+                    flex: 1,
+                    maxWidth: '44px',
+                    height: '52px',
                     textAlign: 'center',
-                    fontSize: '22px',
+                    fontSize: '20px',
                     fontWeight: 800,
                     fontFamily: 'var(--font-body)',
                     color: 'var(--text-primary)',

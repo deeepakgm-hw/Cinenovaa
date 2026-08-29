@@ -653,26 +653,26 @@ export default function SeatPage() {
     <div className="min-h-screen text-slate-100 bg-[#07070a]">
       <NavBar />
 
-      <main className="max-w-5xl mx-auto px-6 py-8">
+      <main className="max-w-5xl mx-auto px-3 sm:px-6 py-4 sm:py-8">
         {movie && showtime && (
-          <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-900/60 pb-5">
+          <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-900/60 pb-4">
             <div>
-              <div className="flex gap-2.5 items-center">
-                <span className="text-[10px] font-bold text-rose-500 uppercase tracking-widest bg-rose-500/10 border border-rose-500/20 px-2.5 py-1 rounded-full">
+              <div className="flex gap-2 items-center flex-wrap">
+                <span className="text-[10px] font-bold text-rose-500 uppercase tracking-widest bg-rose-500/10 border border-rose-500/20 px-2 py-0.5 rounded-full">
                   Choose Seats
                 </span>
-                <span className="text-[10px] font-bold text-yellow-450 uppercase tracking-widest bg-yellow-500/10 border border-yellow-500/20 px-2.5 py-1 rounded-full">
+                <span className="text-[10px] font-bold text-yellow-450 uppercase tracking-widest bg-yellow-500/10 border border-yellow-500/20 px-2 py-0.5 rounded-full">
                   {showtime.screenType} Premium Format
                 </span>
               </div>
-              <h2 className="text-3xl font-black text-white mt-3.5 leading-none">{movie.title}</h2>
-              <p className="text-slate-500 text-xs mt-2 font-semibold tracking-wide">
+              <h2 className="text-2xl sm:text-3xl font-black text-white mt-2 sm:mt-3.5 leading-none">{movie.title}</h2>
+              <p className="text-slate-500 text-xs mt-1.5 font-semibold tracking-wide">
                 {showtime.theatreName} ({showtime.screenType}) | {showtime.screenName} | {showtime.showTime}
               </p>
             </div>
             <button
               onClick={() => navigate('/movies')}
-              className="text-[10px] uppercase tracking-wider px-5 py-2.5 bg-slate-900 border border-slate-850 hover:bg-slate-800 rounded-full font-bold transition-all w-max"
+              className="text-[10px] uppercase tracking-wider px-4 py-2 bg-slate-900 border border-slate-850 hover:bg-slate-800 rounded-full font-bold transition-all w-max"
             >
               ← Back to Movies
             </button>
@@ -704,9 +704,9 @@ export default function SeatPage() {
         {loading ? (
           <div className="text-center py-20 text-slate-500 text-xs font-semibold">Configuring seating hall layout...</div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-fade-in">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 animate-fade-in">
             {/* Visual seat selector */}
-            <div className="lg:col-span-2 rounded-3xl bg-slate-900/20 border border-slate-900 p-8 flex flex-col items-center overflow-hidden">
+            <div className="lg:col-span-2 rounded-2xl sm:rounded-3xl bg-slate-900/20 border border-slate-900 p-3 sm:p-8 flex flex-col items-center overflow-hidden">
               
               {/* Participant Panel */}
               {sessionCode && (
@@ -747,7 +747,7 @@ export default function SeatPage() {
               )}
 
               {/* Screen Curved Indicator */}
-              <div className="w-full max-w-lg text-center mb-16 relative">
+              <div className="w-full max-w-lg text-center mb-6 sm:mb-12 relative">
                 <svg viewBox="0 0 400 30" className="w-full drop-shadow-[0_0_8px_rgba(244,63,94,0.3)]">
                   <path 
                     d="M 20 25 Q 200 5 380 25" 
@@ -764,20 +764,25 @@ export default function SeatPage() {
                     </linearGradient>
                   </defs>
                 </svg>
-                <div className="text-[10px] font-black text-slate-500 tracking-[0.4em] uppercase mt-2">
+                <div className="text-[10px] font-black text-slate-500 tracking-[0.3em] uppercase mt-2">
                   {showtime?.screenType} Curved Projection Screen
                 </div>
               </div>
 
+              {/* Mobile swipe helper */}
+              <div className="sm:hidden text-center text-[10px] text-slate-500 mb-2 flex items-center justify-center gap-1.5 font-semibold">
+                <span>↔ Swipe left / right to view all seats</span>
+              </div>
+
               {/* Grid of Seats */}
-              <div className="space-y-4 w-full max-w-xl overflow-x-auto pb-4 px-2">
+              <div className="space-y-3 sm:space-y-4 w-full max-w-xl overflow-x-auto pb-4 px-1 sm:px-2">
                 {Array.from({ length: Math.ceil(seats.length / (showtime?.screenType === 'IMAX' ? 15 : 10)) }).map((_, rIndex) => {
                   const cols = showtime?.screenType === 'IMAX' ? 15 : 10
                   const rowSeats = seats.slice(rIndex * cols, (rIndex + 1) * cols)
                   const rowChar = String.fromCharCode('A'.charCodeAt(0) + rIndex)
                   return (
-                    <div key={rIndex} className="flex gap-2.5 items-center justify-center min-w-[500px]">
-                      <span className="w-6 text-center text-xs font-bold text-slate-600 mr-2">{rowChar}</span>
+                    <div key={rIndex} className="flex gap-1.5 sm:gap-2.5 items-center justify-center min-w-[420px] sm:min-w-[500px]">
+                      <span className="w-5 sm:w-6 text-center text-[10px] sm:text-xs font-bold text-slate-600 mr-1 sm:mr-2">{rowChar}</span>
                       {rowSeats.map(seat => {
                         const isCouple = seat.type === 'Couple Seats'
                         const selection = sessionCode ? activeSelections.find(s => s.seatId === seat.seatNumber) : null
@@ -790,7 +795,7 @@ export default function SeatPage() {
                             onMouseEnter={() => handleSeatMouseEnter(seat)}
                             onMouseLeave={() => handleSeatMouseLeave(seat)}
                             disabled={seat.status === 'BOOKED' || seat.status === 'LOCKED' || seat.status === 'MAINTENANCE'}
-                            className={`h-9 rounded-xl flex items-center justify-center text-[10px] font-extrabold transition-all outline-none relative group ${getSeatClass(seat)} ${isCouple ? 'w-20' : 'w-9'}`}
+                            className={`h-7 sm:h-9 rounded-lg sm:rounded-xl flex items-center justify-center text-[9px] sm:text-[10px] font-extrabold transition-all outline-none relative group ${getSeatClass(seat)} ${isCouple ? 'w-16 sm:w-20' : 'w-7 sm:w-9'}`}
                             title={`${seat.seatNumber} - ${seat.type} (INR ${seat.price})`}
                           >
                             {/* Initials bubble on hover/select */}
@@ -807,7 +812,7 @@ export default function SeatPage() {
                             
                             {isCouple ? (
                               <span className="flex items-center gap-1">
-                                <svg className="w-3.5 h-3.5 text-pink-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                <svg className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-pink-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                                   <path d="M19 14V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v8" />
                                   <path d="M3 14h18v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4Z" />
                                 </svg>
@@ -816,7 +821,7 @@ export default function SeatPage() {
                             ) : (
                               <span>
                                 {seat.status === 'MAINTENANCE' ? (
-                                  <svg className="w-3.5 h-3.5 text-red-500 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                  <svg className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-red-500 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                                     <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
                                   </svg>
                                 ) : seat.seatNumber.slice(1)}
@@ -825,7 +830,7 @@ export default function SeatPage() {
                           </button>
                         )
                       })}
-                      <span className="w-6 text-center text-xs font-bold text-slate-600 ml-2">{rowChar}</span>
+                      <span className="w-5 sm:w-6 text-center text-[10px] sm:text-xs font-bold text-slate-600 ml-1 sm:ml-2">{rowChar}</span>
                     </div>
                   )
                 })}
@@ -897,7 +902,7 @@ export default function SeatPage() {
             </div>
 
             {/* Sidebar Invoice breakdown */}
-            <div className="rounded-3xl bg-slate-900/20 border border-slate-900 p-8 flex flex-col justify-between h-fit text-left">
+            <div className="rounded-2xl sm:rounded-3xl bg-slate-900/20 border border-slate-900 p-4 sm:p-8 flex flex-col justify-between h-fit text-left">
               <div>
                 <h3 className="text-lg font-bold text-white mb-6 border-b border-slate-900/40 pb-3 uppercase tracking-wider">Ticket Invoice</h3>
                 <div className="space-y-4">
