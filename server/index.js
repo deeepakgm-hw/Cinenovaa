@@ -259,6 +259,14 @@ app.post('/api/auth/google', async (req, res) => {
             username = userRows[0].username;
             role = userRows[0].role;
         } else {
+            // Ensure unique username
+            let finalUsername = (username || email.split('@')[0]).slice(0, 45);
+            const [existingName] = await pool.query('SELECT id FROM users WHERE username = ?', [finalUsername]);
+            if (existingName.length > 0) {
+                finalUsername = `${finalUsername.slice(0, 38)}_${Math.floor(1000 + Math.random() * 9000)}`;
+            }
+            username = finalUsername;
+
             // Register new Google user
             const [insertRes] = await pool.query(
                 'INSERT INTO users (username, password, email, role) VALUES (?, ?, ?, ?)',
@@ -268,7 +276,7 @@ app.post('/api/auth/google', async (req, res) => {
 
             // Create user wallet with balance 1000.00 and 50 loyalty points
             await pool.query(
-                'INSERT INTO wallet (user_id, balance, loyalty_points) VALUES (?, ?, ?)',
+                'INSERT IGNORE INTO wallet (user_id, balance, loyalty_points) VALUES (?, ?, ?)',
                 [userId, 1000.00, 50]
             );
             console.log(`[GOOGLE AUTH] Registered new user ${email} (ID: ${userId}) with initial wallet balance.`);
@@ -278,7 +286,7 @@ app.post('/api/auth/google', async (req, res) => {
         const sessionId = 'SES-G-' + crypto.randomBytes(8).toString('hex').toUpperCase();
         await pool.query(
             "INSERT INTO user_sessions (session_id, user_id, username, status) VALUES (?, ?, ?, 'ACTIVE')",
-            [sessionId, userId, username]
+            [sessionId, userId, username.slice(0, 50)]
         );
 
         console.log(`[GOOGLE AUTH] User ${email} authenticated successfully. Session: ${sessionId}`);
@@ -291,7 +299,15 @@ app.post('/api/auth/google', async (req, res) => {
 
     } catch (err) {
         console.error('[GOOGLE AUTH ERROR]:', err.message);
-        res.status(500).json({ success: false, error: err.message, message: 'Google authentication failed.' });
+        let userMessage = 'Google authentication failed.';
+        if (err.message && (err.message.includes('ENOTFOUND') || err.message.includes('ECONNREFUSED') || err.message.includes('ETIMEDOUT'))) {
+            userMessage = 'Database connection offline. Please check Aiven database status.';
+        } else if (err.response?.data?.error_description) {
+            userMessage = err.response.data.error_description;
+        } else if (err.response?.data?.message) {
+            userMessage = err.response.data.message;
+        }
+        res.status(500).json({ success: false, error: err.message, message: userMessage });
     }
 });
 
