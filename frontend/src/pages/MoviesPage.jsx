@@ -233,20 +233,49 @@ const FALLBACK_MOVIES = [
     }
   }
 
+  const fetchLiveTmdbClient = async (endpoint, status) => {
+    try {
+      const res = await axios.get(`https://api.tmdb.org/3/movie/${endpoint}?api_key=8265bd1679663a7ea12ac168da84d2e8&language=en-US&page=1`, { timeout: 6000 })
+      if (res.data?.results && res.data.results.length > 0) {
+        return res.data.results.slice(0, 10).map((m, idx) => ({
+          id: m.id,
+          title: m.title,
+          description: m.overview,
+          duration: 135,
+          genre: 'Action, Drama, Thriller',
+          language: m.original_language === 'hi' ? 'Hindi' : 'English',
+          release_date: m.release_date || new Date().toISOString().substring(0, 10),
+          rating: m.vote_average ? m.vote_average.toFixed(1) : '8.0',
+          status: status,
+          cast_members: 'Cinema Stars',
+          poster_url: m.poster_path ? `https://image.tmdb.org/t/p/w500${m.poster_path}` : '',
+          backdrop_url: m.backdrop_path ? `https://image.tmdb.org/t/p/w1280${m.backdrop_path}` : (m.poster_path ? `https://image.tmdb.org/t/p/w1280${m.poster_path}` : ''),
+          trailer_url: 'https://www.youtube.com/watch?v=YoHD9XEInc0',
+          movie_api_id: String(m.id)
+        }))
+      }
+    } catch {}
+    return []
+  }
+
   const fetchDashboard = async (cityId) => {
     try {
       const [rNow, rUp, rPop] = await Promise.all([
         movieApi.list(cityId), movieApi.upcoming(), movieApi.popular()
       ])
-      const nowData = (rNow.data && Array.isArray(rNow.data) && rNow.data.length > 0)
-        ? rNow.data
-        : FALLBACK_MOVIES.filter(m => m.status === 'NOW_SHOWING')
-      const upData = (rUp.data && Array.isArray(rUp.data) && rUp.data.length > 0)
-        ? rUp.data
-        : FALLBACK_MOVIES.filter(m => m.status === 'COMING_SOON')
-      const popData = (rPop.data && Array.isArray(rPop.data) && rPop.data.length > 0)
-        ? rPop.data
-        : FALLBACK_MOVIES.filter(m => m.status === 'NOW_SHOWING')
+      let nowData = (rNow.data && Array.isArray(rNow.data) && rNow.data.length > 0) ? rNow.data : []
+      let upData = (rUp.data && Array.isArray(rUp.data) && rUp.data.length > 0) ? rUp.data : []
+      let popData = (rPop.data && Array.isArray(rPop.data) && rPop.data.length > 0) ? rPop.data : []
+
+      // If backend was cold starting, query live TMDB endpoints immediately
+      if (nowData.length === 0) nowData = await fetchLiveTmdbClient('now_playing', 'NOW_SHOWING')
+      if (upData.length === 0) upData = await fetchLiveTmdbClient('upcoming', 'COMING_SOON')
+      if (popData.length === 0) popData = await fetchLiveTmdbClient('popular', 'POPULAR')
+
+      // Fallback only if both backend and TMDB network fail
+      if (nowData.length === 0) nowData = FALLBACK_MOVIES.filter(m => m.status === 'NOW_SHOWING')
+      if (upData.length === 0) upData = FALLBACK_MOVIES.filter(m => m.status === 'COMING_SOON')
+      if (popData.length === 0) popData = FALLBACK_MOVIES.filter(m => m.status === 'NOW_SHOWING')
 
       setNowShowing(nowData)
       setUpcoming(upData)
@@ -259,10 +288,15 @@ const FALLBACK_MOVIES = [
       ;[...nowData, ...popData, ...upData].forEach(m => { merged[m.id] = m })
       setRecommended(Object.values(merged).filter(m => m.rating && parseFloat(m.rating) >= 7.8).slice(0, 8))
     } catch (err) {
-      console.warn('Dashboard live fetch notice, using fallback catalog:', err.message)
-      const nowData = FALLBACK_MOVIES.filter(m => m.status === 'NOW_SHOWING')
-      const upData = FALLBACK_MOVIES.filter(m => m.status === 'COMING_SOON')
-      const popData = FALLBACK_MOVIES.filter(m => m.status === 'NOW_SHOWING')
+      console.warn('Dashboard live fetch notice, syncing live TMDB feed:', err.message)
+      const [liveNow, liveUp, livePop] = await Promise.all([
+        fetchLiveTmdbClient('now_playing', 'NOW_SHOWING'),
+        fetchLiveTmdbClient('upcoming', 'COMING_SOON'),
+        fetchLiveTmdbClient('popular', 'POPULAR')
+      ])
+      const nowData = liveNow.length > 0 ? liveNow : FALLBACK_MOVIES.filter(m => m.status === 'NOW_SHOWING')
+      const upData = liveUp.length > 0 ? liveUp : FALLBACK_MOVIES.filter(m => m.status === 'COMING_SOON')
+      const popData = livePop.length > 0 ? livePop : FALLBACK_MOVIES.filter(m => m.status === 'NOW_SHOWING')
 
       setNowShowing(nowData)
       setUpcoming(upData)

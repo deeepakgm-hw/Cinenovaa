@@ -7,7 +7,7 @@ const cron = require('node-cron');
 const cors = require('cors');
 const path = require('path');
 const crypto = require('crypto');
-const { runSync, searchMoviesApi, getPool, ensureBaseSchema, fallbackMovies } = require('./services/movieSyncService');
+const { runSync, searchMoviesApi, getPool, ensureBaseSchema, fallbackMovies, getLiveTmdbFeed } = require('./services/movieSyncService');
 const emailService = require('./services/emailService');
 const Razorpay = require('razorpay');
 const razorpay = (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET)
@@ -1572,8 +1572,10 @@ app.get('/api/movies/now-playing', async (req, res) => {
         const [rows] = await pool.query("SELECT * FROM movies WHERE status = 'NOW_SHOWING' OR status = 'POPULAR'");
         if (rows && rows.length > 0) return res.json(rows);
     } catch (err) {
-        console.warn('[API NOTICE] /api/movies/now-playing fallback:', err.message);
+        console.warn('[API NOTICE] /api/movies/now-playing DB notice:', err.message);
     }
+    const liveMovies = await getLiveTmdbFeed('now_playing', 'NOW_SHOWING');
+    if (liveMovies && liveMovies.length > 0) return res.json(liveMovies);
     res.json(getFallbackMoviesWithIds().filter(m => m.status === 'NOW_SHOWING' || m.status === 'POPULAR'));
 });
 
@@ -1584,8 +1586,10 @@ app.get('/api/movies/upcoming', async (req, res) => {
         const [rows] = await pool.query("SELECT * FROM movies WHERE status = 'COMING_SOON'");
         if (rows && rows.length > 0) return res.json(rows);
     } catch (err) {
-        console.warn('[API NOTICE] /api/movies/upcoming fallback:', err.message);
+        console.warn('[API NOTICE] /api/movies/upcoming DB notice:', err.message);
     }
+    const liveMovies = await getLiveTmdbFeed('upcoming', 'COMING_SOON');
+    if (liveMovies && liveMovies.length > 0) return res.json(liveMovies);
     res.json(getFallbackMoviesWithIds().filter(m => m.status === 'COMING_SOON'));
 });
 
@@ -1596,8 +1600,10 @@ app.get('/api/movies/popular', async (req, res) => {
         const [rows] = await pool.query("SELECT * FROM movies WHERE status = 'POPULAR' OR status = 'NOW_SHOWING' ORDER BY CAST(rating AS DECIMAL(3,1)) DESC LIMIT 10");
         if (rows && rows.length > 0) return res.json(rows);
     } catch (err) {
-        console.warn('[API NOTICE] /api/movies/popular fallback:', err.message);
+        console.warn('[API NOTICE] /api/movies/popular DB notice:', err.message);
     }
+    const liveMovies = await getLiveTmdbFeed('popular', 'POPULAR');
+    if (liveMovies && liveMovies.length > 0) return res.json(liveMovies);
     res.json(getFallbackMoviesWithIds().filter(m => m.status === 'POPULAR' || m.status === 'NOW_SHOWING'));
 });
 
@@ -1617,14 +1623,20 @@ app.get('/api/movies/search', async (req, res) => {
         );
         if (dbRows && dbRows.length > 0) return res.json(dbRows);
 
-        // If local database has no matches, and API key is set, try searching TMDB API
+        // If local database has no matches, query TMDB API
         const apiResults = await searchMoviesApi(queryStr);
         if (apiResults && apiResults.length > 0) {
             return res.json(apiResults);
         }
     } catch (err) {
-        console.warn('[API NOTICE] /api/movies/search fallback:', err.message);
+        console.warn('[API NOTICE] /api/movies/search DB notice:', err.message);
     }
+
+    const apiResults = await searchMoviesApi(queryStr);
+    if (apiResults && apiResults.length > 0) {
+        return res.json(apiResults);
+    }
+
     const qLower = queryStr.toLowerCase();
     const fallbackResults = getFallbackMoviesWithIds().filter(m =>
         m.title.toLowerCase().includes(qLower) ||
@@ -1655,8 +1667,10 @@ app.get('/api/movies', async (req, res) => {
         }
         if (rows && rows.length > 0) return res.json(rows);
     } catch (err) {
-        console.warn('[API NOTICE] /api/movies fallback:', err.message);
+        console.warn('[API NOTICE] /api/movies DB notice:', err.message);
     }
+    const liveMovies = await getLiveTmdbFeed('now_playing', 'NOW_SHOWING');
+    if (liveMovies && liveMovies.length > 0) return res.json(liveMovies);
     res.json(getFallbackMoviesWithIds().filter(m => m.status === 'NOW_SHOWING' || m.status === 'POPULAR'));
 });
 

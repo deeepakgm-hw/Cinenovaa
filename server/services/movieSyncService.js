@@ -696,10 +696,42 @@ async function searchMoviesApi(query) {
     }
 }
 
+const memoryFeedCache = {
+    now_playing: { data: null, time: 0 },
+    upcoming: { data: null, time: 0 },
+    popular: { data: null, time: 0 }
+};
+
+async function getLiveTmdbFeed(endpoint = 'now_playing', status = 'NOW_SHOWING') {
+    const config = getDbConfig();
+    const apiKey = config.tmdbKey || '8265bd1679663a7ea12ac168da84d2e8';
+    const now = Date.now();
+    const cached = memoryFeedCache[endpoint];
+    if (cached && cached.data && (now - cached.time < 30 * 60 * 1000)) {
+        return cached.data;
+    }
+
+    try {
+        const liveList = await fetchListFromTmdb(apiKey, `/movie/${endpoint}`, status);
+        if (liveList && liveList.length > 0) {
+            const mapped = liveList.map((m, idx) => ({
+                id: parseInt(m.movie_api_id, 10) || (idx + 1),
+                ...m
+            }));
+            memoryFeedCache[endpoint] = { data: mapped, time: now };
+            return mapped;
+        }
+    } catch (err) {
+        console.warn(`[TMDB LIVE FEED] Failed to load /movie/${endpoint}:`, err.message);
+    }
+    return cached?.data || [];
+}
+
 module.exports = {
     runSync,
     searchMoviesApi,
     getPool,
     ensureBaseSchema,
-    fallbackMovies
+    fallbackMovies,
+    getLiveTmdbFeed
 };
