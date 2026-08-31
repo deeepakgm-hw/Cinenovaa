@@ -515,27 +515,47 @@ app.get('/api/showtimes', async (req, res) => {
         console.warn('[API NOTICE] /api/showtimes fallback:', err.message);
     }
 
-    // Dynamic showtimes generator
+    // Dynamic showtimes generator for all active theatres
     const times = ["10:30:00", "14:15:00", "18:00:00", "21:30:00"];
     const prices = [250.00, 300.00, 350.00, 400.00];
     const fallbackResults = [];
     const today = new Date().toISOString().substring(0, 10);
     const tomorrow = new Date(Date.now() + 86400000).toISOString().substring(0, 10);
-    [today, tomorrow].forEach((d, dayIdx) => {
-        times.forEach((t, timeIdx) => {
-            const stId = (parseInt(movieId, 10) || 1) * 100 + dayIdx * 10 + timeIdx + 1;
-            fallbackResults.push({
-                id: stId,
-                show_time: `${d} ${t}`,
-                price: prices[timeIdx],
-                show_type: '2D',
-                surge_pricing: 0.00,
-                screen_name: `Screen ${timeIdx + 1}`,
-                screen_type: timeIdx % 2 === 0 ? 'IMAX' : 'Regular',
-                theatre_name: theatreId == 2 ? 'INOX Forum' : (theatreId == 3 ? 'Cinepolis Andheri' : 'PVR Orion'),
-                theatre_id: parseInt(theatreId, 10) || 1,
-                isWeekend: false,
-                surgeBreakdown: []
+    const targetTheatreIds = theatreId ? [parseInt(theatreId, 10)] : [1, 2, 3, 4];
+
+    const theatreNames = {
+        1: 'PVR Orion',
+        2: 'INOX Forum',
+        3: 'Cinepolis Andheri',
+        4: 'PVR Plaza Connaught Place'
+    };
+
+    targetTheatreIds.forEach(thId => {
+        const thName = theatreNames[thId] || `Cinema Multiplex ${thId}`;
+        [today, tomorrow].forEach((d, dayIdx) => {
+            times.forEach((t, timeIdx) => {
+                const stId = (parseInt(movieId, 10) || 1) * 1000 + thId * 100 + dayIdx * 10 + timeIdx + 1;
+                const timeStr = `${d} ${t}`;
+                fallbackResults.push({
+                    id: stId,
+                    showTime: timeStr,
+                    show_time: timeStr,
+                    price: prices[timeIdx],
+                    showType: '2D',
+                    show_type: '2D',
+                    surgePricing: 0.00,
+                    surge_pricing: 0.00,
+                    screenName: `Screen ${timeIdx + 1}`,
+                    screen_name: `Screen ${timeIdx + 1}`,
+                    screenType: timeIdx % 2 === 0 ? 'IMAX' : 'Regular',
+                    screen_type: timeIdx % 2 === 0 ? 'IMAX' : 'Regular',
+                    theatreName: thName,
+                    theatre_name: thName,
+                    theatreId: thId,
+                    theatre_id: thId,
+                    isWeekend: false,
+                    surgeBreakdown: []
+                });
             });
         });
     });
