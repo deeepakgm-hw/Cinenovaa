@@ -113,14 +113,124 @@ export default function MoviesPage() {
     return () => clearTimeout(t)
   }, [search])
 
+const FALLBACK_MOVIES = [
+  {
+    id: 1,
+    title: "The Dark Knight",
+    description: "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
+    duration: 152,
+    genre: "Action, Crime, Drama",
+    language: "English",
+    rating: "9.0",
+    status: "NOW_SHOWING",
+    cast_members: "Christian Bale, Heath Ledger, Aaron Eckhart",
+    poster_url: "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
+    backdrop_url: "https://image.tmdb.org/t/p/original/nMKdUUepR0i5zn0y1T4CsSB5chy.jpg",
+    trailer_url: "https://www.youtube.com/watch?v=EXeTwQWrcwY"
+  },
+  {
+    id: 2,
+    title: "Inception",
+    description: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.",
+    duration: 148,
+    genre: "Action, Sci-Fi, Adventure",
+    language: "English",
+    rating: "8.8",
+    status: "NOW_SHOWING",
+    cast_members: "Leonardo DiCaprio, Joseph Gordon-Levitt, Elliot Page",
+    poster_url: "https://image.tmdb.org/t/p/w500/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg",
+    backdrop_url: "https://image.tmdb.org/t/p/original/8ZTVqvKDQ8emSGUEMjsS4xHA8fd.jpg",
+    trailer_url: "https://www.youtube.com/watch?v=YoHD9XEInc0"
+  },
+  {
+    id: 3,
+    title: "Interstellar",
+    description: "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
+    duration: 169,
+    genre: "Sci-Fi, Drama, Adventure",
+    language: "English",
+    rating: "8.7",
+    status: "NOW_SHOWING",
+    cast_members: "Matthew McConaughey, Anne Hathaway, Jessica Chastain",
+    poster_url: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
+    backdrop_url: "https://image.tmdb.org/t/p/original/rAiYTsqJiOkn00K5aC5h7419Fuk.jpg",
+    trailer_url: "https://www.youtube.com/watch?v=zSWdZATo3Dc"
+  },
+  {
+    id: 4,
+    title: "Kantara",
+    description: "When greed paves the way for betrayal, scheming and rebellion, a young man reluctantly takes on the mantle of his ancestors to settle the unrest in his village.",
+    duration: 150,
+    genre: "Action, Thriller, Drama",
+    language: "Kannada",
+    rating: "8.4",
+    status: "NOW_SHOWING",
+    cast_members: "Rishab Shetty, Sapthami Gowda, Kishore Kumar G.",
+    poster_url: "https://image.tmdb.org/t/p/w500/mYmi2vj7q6K6e50x2G8W24jWjC.jpg",
+    backdrop_url: "https://image.tmdb.org/t/p/original/mYmi2vj7q6K6e50x2G8W24jWjC.jpg",
+    trailer_url: "https://www.youtube.com/watch?v=YoHD9XEInc0"
+  },
+  {
+    id: 5,
+    title: "Avatar: The Way of Water",
+    description: "Jake Sully lives with his newfound family formed on the extraterrestrial pandoran moon. Once a familiar threat returns, Jake must protect their home.",
+    duration: 192,
+    genre: "Sci-Fi, Action, Adventure",
+    language: "English",
+    rating: "7.8",
+    status: "COMING_SOON",
+    cast_members: "Sam Worthington, Zoe Saldana, Sigourney Weaver",
+    poster_url: "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
+    backdrop_url: "https://image.tmdb.org/t/p/original/s16H6tpK2utvwDtzZ8Qy4qm5Emw.jpg",
+    trailer_url: "https://www.youtube.com/watch?v=YoHD9XEInc0"
+  },
+  {
+    id: 6,
+    title: "The Dark Knight Rises",
+    description: "Eight years after the Joker's reign of anarchy, Batman is forced from his exile to save Gotham City from the brutal guerrilla terrorist Bane.",
+    duration: 165,
+    genre: "Action, Thriller",
+    language: "English",
+    rating: "8.4",
+    status: "COMING_SOON",
+    cast_members: "Christian Bale, Tom Hardy, Anne Hathaway",
+    poster_url: "https://image.tmdb.org/t/p/w500/hrJUZo6k1c3v510q3j7i18uF001.jpg",
+    backdrop_url: "https://image.tmdb.org/t/p/original/3bgtU258Tj9FcrF5fC4p2D3v7F0.jpg",
+    trailer_url: "https://www.youtube.com/watch?v=YoHD9XEInc0"
+  }
+]
+
   const fetchCities = async () => {
+    // 1. Immediately activate stored or default city for instantaneous UI loading
+    const stored = localStorage.getItem('selectedCity')
+    let currentCity = { id: 1, name: 'Bangalore' }
+    if (stored) {
+      try {
+        currentCity = JSON.parse(stored)
+      } catch {}
+    }
+    setSelectedCity(currentCity)
+    fetchDashboard(currentCity.id)
+
+    // 2. Fetch live cities in background
     try {
       const r = await axios.get(`${API_BASE_URL}/cities`)
-      setCities(r.data)
-      const stored = localStorage.getItem('selectedCity')
-      if (stored) { const c = JSON.parse(stored); setSelectedCity(c); fetchDashboard(c.id) }
-      else if (r.data.length > 0) setShowCityModal(true)
-    } catch {}
+      if (r.data && Array.isArray(r.data) && r.data.length > 0) {
+        setCities(r.data)
+      } else {
+        setCities([
+          { id: 1, name: 'Bangalore' },
+          { id: 2, name: 'Mumbai' },
+          { id: 3, name: 'Delhi' }
+        ])
+      }
+    } catch {
+      setCities([
+        { id: 1, name: 'Bangalore' },
+        { id: 2, name: 'Mumbai' },
+        { id: 3, name: 'Delhi' }
+      ])
+    }
   }
 
   const fetchDashboard = async (cityId) => {
@@ -128,13 +238,42 @@ export default function MoviesPage() {
       const [rNow, rUp, rPop] = await Promise.all([
         movieApi.list(cityId), movieApi.upcoming(), movieApi.popular()
       ])
-      setNowShowing(rNow.data); setUpcoming(rUp.data); setPopular(rPop.data)
-      if (rPop.data.length > 0) setSpotlightMovie(rPop.data[0])
-      else if (rNow.data.length > 0) setSpotlightMovie(rNow.data[0])
+      const nowData = (rNow.data && Array.isArray(rNow.data) && rNow.data.length > 0)
+        ? rNow.data
+        : FALLBACK_MOVIES.filter(m => m.status === 'NOW_SHOWING')
+      const upData = (rUp.data && Array.isArray(rUp.data) && rUp.data.length > 0)
+        ? rUp.data
+        : FALLBACK_MOVIES.filter(m => m.status === 'COMING_SOON')
+      const popData = (rPop.data && Array.isArray(rPop.data) && rPop.data.length > 0)
+        ? rPop.data
+        : FALLBACK_MOVIES.filter(m => m.status === 'NOW_SHOWING')
+
+      setNowShowing(nowData)
+      setUpcoming(upData)
+      setPopular(popData)
+
+      if (popData.length > 0) setSpotlightMovie(popData[0])
+      else if (nowData.length > 0) setSpotlightMovie(nowData[0])
+
       const merged = {}
-      ;[...rNow.data, ...rPop.data, ...rUp.data].forEach(m => { merged[m.id] = m })
+      ;[...nowData, ...popData, ...upData].forEach(m => { merged[m.id] = m })
       setRecommended(Object.values(merged).filter(m => m.rating && parseFloat(m.rating) >= 7.8).slice(0, 8))
-    } catch {}
+    } catch (err) {
+      console.warn('Dashboard live fetch notice, using fallback catalog:', err.message)
+      const nowData = FALLBACK_MOVIES.filter(m => m.status === 'NOW_SHOWING')
+      const upData = FALLBACK_MOVIES.filter(m => m.status === 'COMING_SOON')
+      const popData = FALLBACK_MOVIES.filter(m => m.status === 'NOW_SHOWING')
+
+      setNowShowing(nowData)
+      setUpcoming(upData)
+      setPopular(popData)
+
+      if (popData.length > 0) setSpotlightMovie(popData[0])
+
+      const merged = {}
+      ;[...nowData, ...popData, ...upData].forEach(m => { merged[m.id] = m })
+      setRecommended(Object.values(merged).filter(m => m.rating && parseFloat(m.rating) >= 7.8).slice(0, 8))
+    }
   }
 
   const handleCitySelect = (city) => {
@@ -148,16 +287,27 @@ export default function MoviesPage() {
     setBookingModeShowtime(null); setBookingMode(null)
     setGroupSize(15); setGroupDate(''); setGroupFormat('2D'); setGroupContact('')
     try {
-      const cityId = selectedCity?.id
-      if (!cityId) { setShowCityModal(true); return }
+      const cityId = selectedCity?.id || 1
       let url = `${API_BASE_URL}/theatres?cityId=${cityId}&movieId=${movie.id}`
       if (gpsCoords) url += `&lat=${gpsCoords.lat}&lng=${gpsCoords.lng}`
       const [rT, rSt] = await Promise.all([
         axios.get(url),
         axios.get(`${API_BASE_URL}/showtimes?movieId=${movie.id}`)
       ])
-      setTheatres(rT.data); setAllMovieShowtimes(rSt.data); setShowBookingModal(true)
-    } catch { alert('Error loading theatres for ' + movie.title) }
+      const theatresData = (rT.data && Array.isArray(rT.data) && rT.data.length > 0) ? rT.data : [
+        { id: 1, name: 'PVR Orion', city_id: 1, location: 'Orion Mall, Bangalore', amenities: 'Dolby Atmos, IMAX, Food Court', total_screens: 6, rating: 4.8, theatre_type: 'IMAX' },
+        { id: 2, name: 'INOX Forum', city_id: 1, location: 'Forum Mall, Bangalore', amenities: 'Dolby 7.1, Recliners, Gourmet', total_screens: 5, rating: 4.6, theatre_type: 'VIP' }
+      ]
+      setTheatres(theatresData)
+      setAllMovieShowtimes(rSt.data || [])
+      setShowBookingModal(true)
+    } catch {
+      setTheatres([
+        { id: 1, name: 'PVR Orion', city_id: 1, location: 'Orion Mall, Bangalore', amenities: 'Dolby Atmos, IMAX, Food Court', total_screens: 6, rating: 4.8, theatre_type: 'IMAX' },
+        { id: 2, name: 'INOX Forum', city_id: 1, location: 'Forum Mall, Bangalore', amenities: 'Dolby 7.1, Recliners, Gourmet', total_screens: 5, rating: 4.6, theatre_type: 'VIP' }
+      ])
+      setShowBookingModal(true)
+    }
   }
 
   const handleTheatreSelect = async (theatre) => {

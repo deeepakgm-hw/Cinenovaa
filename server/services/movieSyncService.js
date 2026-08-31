@@ -700,5 +700,6 @@ module.exports = {
     runSync,
     searchMoviesApi,
     getPool,
-    ensureBaseSchema
+    ensureBaseSchema,
+    fallbackMovies
 };
