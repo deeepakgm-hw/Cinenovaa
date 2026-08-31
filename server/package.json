@@ -4,6 +4,7 @@
   "description": "Express backend server for CineNova cinema ticket booking platform",
   "main": "index.js",
   "scripts": {
+    "build": "echo 'Build complete'",
     "start": "node index.js",
     "db:setup": "node setup_db.js"
   },

@@ -2626,13 +2626,18 @@ app.get('/api/status', async (req, res) => {
     });
 });
 
+// Root and health check routes for cloud load balancers / Render
+app.get('/', (req, res) => res.json({ status: 'OK', message: 'CineNova API is live' }));
+app.get('/health', (req, res) => res.json({ status: 'OK' }));
+app.get('/api/health', (req, res) => res.json({ status: 'OK' }));
+
 // ==========================================
 // SERVER INITIALIZATION & BACKGROUND SCHEDULERS
 // ==========================================
 
-// Start HTTP server and run startup sync
-server.listen(PORT, () => {
-    console.log(`[SERVER] Express server listening on http://localhost:${PORT}`);
+// Start HTTP server and run startup sync (bind to 0.0.0.0 for container hosting)
+server.listen(PORT, '0.0.0.0', () => {
+    console.log(`[SERVER] Express server listening on 0.0.0.0:${PORT}`);
     
     // Auto sync and DB setup on startup in background (non-blocking)
     setTimeout(async () => {

@@ -1,0 +1,9 @@
+{
+  "name": "cinenova-app",
+  "version": "1.0.0",
+  "description": "CineNova Multiplex Booking Platform",
+  "scripts": {
+    "build": "cd server && npm install",
+    "start": "node server/index.js"
+  }
+}
